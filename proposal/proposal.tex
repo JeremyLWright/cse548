@@ -3,6 +3,7 @@
 \usepackage{hyperref}
 \usepackage{graphicx, subfigure, amsmath} 
 \usepackage[backend=biber,style=ieee]{biblatex}
+\usepackage[section]{placeins}
 \addbibresource{References/References.bib}
 \interdisplaylinepenalty=2500
 
@@ -47,22 +48,39 @@
 \section{System Models}
 
 \subsection{System Model}
-Describe the system setup for this project (including proporiate diagram if needed).
-
+RoboTractor will leverage the Django Web framework \autocite{_django_2014}
+, to realize the required
+interfaces.  Figure~\ref{fig:softwarecomponents} describes the connection of
+these components.  The combination of XMPP and REST in RoboTractor is
+a demonstration of how to leverage the existing HTTP development environment
+i.e. "the web of things" into a stateful protocol. HTTP is by design
+stateless. XMPP on the other hand is a stateful streaming connection between two
+clients. In this case the Tractor and a command server.  To achieve this mesh we
+will leverage the Bidirectional-streams Over Synchronous HTTP standard
+protocol \autocite{paterson_bidirectional-streams_2010}. BOSH provides
+a standard mechanism to operate the streaming XMPP protocol efficiently over an
+HTTP connection. This is essential for a scalable webservice. 
 \subsection{Software}
+\subsubsection{XMPP Server}
+RoboTractor uses the ejabberd \autocite{_ejabberd} XMPP server as it provides an existing Python
+interface, to integrate with the rest of our Python based ecosystem.
+\subsubsection{REST Interface}
+TastyPie provides REST \autocite{_toastdriven/django-tastypie_2014} by extending
+the existing Django Models.
+\subsubsection{BOSH Interchange}
+Punjab is an Django plugin implementation of BOSH
+\autocite{_twonds/punjab_2014}.  In addition to BOSH, this library also combines
+th ejabberd Users with Django Users to provide a single authentication and
+authorization framework. While this demo project will have a single user type,
+this combination is critical to maintain proper use management and
+least-privilege authorization.
 
-
-Django \autocite{_django_2014}
-\autocite{_toastdriven/django-tastypie_2014}
-\autocite{_seshat_2014}
-\autocite{_fritzy/sleekxmpp_2014}
-\autocite{elliando_dias_django_2014}
-\autocite{_twonds/punjab_2014}
-\autocite{paterson_bidirectional-streams_2010}
-\autocite{adam_fortuna_xmpp_2011}
-\autocite{_strophe_2014}
-\autocite{_ejabberd}
-\autocite{steffen_larsen_xmpp}
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{SoftwareComponentBlockDiagram.pdf}
+\caption{Software Component Block Diagram}
+\label{fig:softwarecomponents}
+\end{figure}
 
 Describe needed software (applications, tools, APIs) to develop this project.
 \subsection{Security Model (optional)}
