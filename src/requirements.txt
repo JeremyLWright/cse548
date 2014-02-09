@@ -1,8 +1,12 @@
 Django==1.6.2
 Fabric==1.8.1
 argparse==1.2.1
+django-tastypie==0.11.0
 ecdsa==0.10
 paramiko==1.12.1
 punjab==0.15
 pycrypto==2.6.1
+python-dateutil==2.2
+python-mimeparse==0.1.4
+six==1.5.2
 wsgiref==0.1.2
