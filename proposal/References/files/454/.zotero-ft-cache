@@ -1,0 +1,122 @@
+Sign up Sign in
+
+    Explore
+    Features
+    Enterprise
+    Blog
+
+This repository
+This repository
+All repositories
+
+    Star 136
+    Fork 25
+
+public twonds / punjab Octocat-spinner-32
+
+    Code Octocat-spinner-32
+    Issues 5 Octocat-spinner-32
+    Pull Requests 0 Octocat-spinner-32
+
+    Pulse Octocat-spinner-32
+    Graphs Octocat-spinner-32
+    Network Octocat-spinner-32
+
+HTTPS clone URL
+Subversion checkout URL
+
+You can clone with HTTPS , or Subversion .
+Download ZIP
+
+BOSH connection manager
+
+    144 commits
+    9 branches
+    1 release
+    10 contributors
+
+    Python 100%
+
+Python
+branch: master
+Switch branches/tags
+
+    Branches
+    Tags
+
+attribute-error-35
+bad-request-15
+bind-36
+master
+remove-mktap
+shared_bosh
+spnego
+ssl-config
+ssl-help-40
+Nothing to show
+v0.15
+Nothing to show
+punjab /
+Show File Finder
+
+Merge pull request #48 from mattgleeson/site_log_file …
+
+ add --site_log_file flag for redirecting access logs
+
+latest commit af9556819b
+twonds authored 19 days ago
+Octocat-spinner-32 	html 	Add crossdomain.xml to static dir to support cross-domain requests fr… 	4 years ago
+Octocat-spinner-32 	punjab 	Merge pull request #48 from mattgleeson/site_log_file 	19 days ago
+Octocat-spinner-32 	tests 	add simple test case 	a month ago
+Octocat-spinner-32 	twisted 	Merge pull request #48 from mattgleeson/site_log_file 	19 days ago
+Octocat-spinner-32 	.gitignore 	fix it so verbose is verbose and only err logs if not verbose 	5 years ago
+Octocat-spinner-32 	.travis.yml 	run xep206 tests in travis 	a month ago
+Octocat-spinner-32 	CHANGELOG.txt 	add tests for whitelist and a small bug fix on matches, also add supp… 	4 years ago
+Octocat-spinner-32 	INSTALL.txt 	ubuntu not debian re: #41 	6 months ago
+Octocat-spinner-32 	LICENSE.txt 	change LICENSE to MIT 	2 months ago
+Octocat-spinner-32 	MANIFEST.in 	add tests to distro 	5 years ago
+Octocat-spinner-32 	NOTES.txt 	importing punjab, no need for history 	5 years ago
+Octocat-spinner-32 	README.txt 	change LICENSE to MIT 	2 months ago
+Octocat-spinner-32 	punjab.tac 	change documentation and small formatting changes 	3 years ago
+Octocat-spinner-32 	setup.py 	use README as long description for setup disutils 	2 months ago
+README.txt
+
+ GENERAL INFORMATION
+
+PunJab is a HTTP jabber client interface. It is a BOSH connection manager that
+allows persistent client connections to a XMPP server.
+
+INSTALL
+
+See INSTALL.txt for setup and installation instructions.
+
+CONTRIBUTORS
+
+Jack Moffitt xmpp:jackm@jabber.org
+
+Garret Heaton <powdahound@gmail.com>
+
+Zewt ( https://github.com/zewt )
+
+COPYRIGHT AND WARRANTY
+
+Copyright (C) 2001-2013 Christopher Zorn , tofu@thetofu.com
+
+The code in this distribution is made available under the MIT License.
+
+See LICENSE.txt for more details.
+
+    Status
+    API
+    Training
+    Shop
+    Blog
+    About
+
+    © 2014 GitHub , Inc.
+    Terms
+    Privacy
+    Security
+    Contact
+
+Something went wrong with that request. Please try again.
