@@ -1,6 +1,7 @@
 \documentclass[conference,12pt]{IEEEtran}
-
+\usepackage{pdflscape}
 \usepackage{hyperref}
+\usepackage{tabularx}
 \usepackage{graphicx, subfigure, amsmath} 
 \usepackage[backend=biber,style=ieee]{biblatex}
 \usepackage[section]{placeins}
@@ -29,22 +30,42 @@
 
 
 \begin{abstract}
-    Here you need to describe the abstract of your project including (a) Problem statements, (b) project scope, (c) main tasks, and (d) schedule  *CRITICAL:  Do Not Use Symbols, Special Characters, or Math in Paper Title or Abstract. (Abstract)
+The need for the automation of vehicles is increasing due to improved
+efficiency and reduced operational costs. Even though the law requires human
+presence in self-driven agricultural vehicles, recent trends show that as
+our confidence in these self-driven vehicles grow, these requirements on
+human presence will be waived. Once we remove humans from control of these
+vehicles, secure signaling and control takes center stage as there will be
+no human to troubleshoot if the signal and control systems are compromised,
+making vehicles vulnerable to be stolen, damaged, or otherwise harmed. The
+scope of this project is to build a secure signaling and control system with
+mechanisms to drastically reduce if not eliminate the attack vectors. The
+main tasks in this project are to build a front-end interface for users to
+give instructions built upon a Representational State Transfer (REST)
+architecture, set up Extensible Messaging and Presence Protocol (XMPP)
+server and client with required authentication and data integrity check
+mechanisms, and build a simulated automated vehicle, capable of
+interfacing with the XMPP components and front-end.  
 \end{abstract}
 
 \begin{IEEEkeywords}
-    put indexing key words here that  (key words)
+    Secure signaling and control, remote management, agricultural vehicles automation, self-driven vehicles
 \end{IEEEkeywords}
 
 \section{Introduction}
-\IEEEPARstart{I}{n}  this section, describe:
-\begin{enumerate}
-    \item The problems to be addressed in this project.
-    \item Why these problems are important?
-    \item Applied technologies and solutions to address these problems.
-    \item Expected outcomes of this projects.
-    \item Project management plan (timeline, and group members, etc.)
-\end{enumerate}
+Our goal in this project is to build a secure signaling and control system to
+enable the effective management of the agricultural vehicles. The primary
+problem to be addressed in this project is to securely interface and/or
+communicate between user and agricultural vehicles using XMPP and REST
+protocols. This is very important because authentication of vehicles and data
+integrity, here the path plan and location feedback transmission needs to be
+secured and protected from eavesdroppers. This will prevent attackers from
+compromising and/or stealing these vehicles. In this project we use Django to
+handle the front end interface for the users. We use python libraries to
+interface between user and path generator server where we use XMPP and REST
+protocols, and XMPP clients to control the agricultural vehicles. We expect to
+have a comprehensive tool that translates the abstract user inputs into
+executable actions for agricultural vehicles in a secure manner.
 \section{System Models}
 
 \subsection{System Model}
@@ -95,7 +116,7 @@ portably work with the software package. This will involve installing project
 dependencies, and deployment scripts to allow all members of the team to work
 effectively together. The complete environment will be stored in git.
 \subsection{Task 2: XMPP Implementation}
-XMPP Implementation is primarly a configuration task to setup the ejabberd
+XMPP Implementation is a configuration task to setup the ejabberd
 server and connect it into the HTTP Framework. Once this is in place the XMPP
 Clients may start working.
 \subsection{Task 3: Demo Tractor}
@@ -104,7 +125,7 @@ virtual machine, a piece of software which simulates a real tractor, or
 agricultural vehicle. 
 \subsection{Task 4: Frontend UI}
 The "single-page" web application is the modern design methodology to web apps
-today. Leverging this design architecture the Frontend will query the REST api
+today. Leveraging this design architecture the Frontend will query the REST API
 to draw the position of all tractors within a Google Map context. This task has
 2 high level sub tasks:
 \begin{enumerate}
@@ -132,29 +153,76 @@ principles over this REST API.
 \label{fig:resourceallocation}
 \end{figure}
 Jeremy Wright will serve as the project lead since he has past experience with
-Python based web application. 
+Python based web applications. 
+
 \subsection{Deliverables}
-Describe the expected outcomes of the projects: e.g., software packages, tools, algorithms, system designs, publishable materiasl (manuscripts, white papers, surveys, etc.).
+\begin{enumerate}
+\item Web application for sending control commands to remote machine, and
+displaying their current location
+\item A Simulated vehicle capable of acting on XMPP command send via the Web
+interface.
+\item An administration panel for configuring vehicles.
+\item API documentation for using the REST interface as an external service.
+\item API documentation for using the XMPP interface to act as a vehicle.
+\end{enumerate}
 \subsection{Project Timeline}
-The Attached project Timeline (generated from Microsoft Project) describes the
-overall tasks of the project. Please see the attached gantt for details.
+The attached project timeline (generated from Microsoft Project) describes the
+overall tasks of the project.
 \section{Risk Management of the project}
-Describe (a) what potential issues may prevent this project from being successful, (b) what mitigation strategies to prevent/mitigate the identified issues. A good project design should consider what if a task fails. How likely (low, medium, high), the proposed tasks may fail. Are there alternates/makeup/get-arround approaches available? Better use  a table to highlight the risks and corresponding mitigation strategy.
+Several potential issues have been identified that may pose risk to successful
+completion of this project. These risks have been identified in Table
+\ref{tab:riskmanagement}. Along with the description, ratings have been assigned
+to each risk identified, and potential mitigation strategies are described.
 
 \section{Conclusion}
-(a) summarize the project proposal, (b) Describe potential future work (or applications) that can be built based on the proposed work. 
-\section{Acknowledgment }
-Put sponsor/mentor/assistance acknowledgments on developing this project proposal.
+In this proposal we intend to build a remote control system leveraging existing
+internet technologies XMPP and REST. Future work based on this approach may
+include asset management for corporate farm management.
 
-Reference is very important in your report. Please highlight where you have
-referred technical terms and solutions in the content. Following the IEEE
-citation format and provide a complete citation for each reference. The template
-will number citations consecutively within brackets [1]. The sentence
-punctuation follows the bracket [2]. Refer simply to the reference number, as in
-[3]—do not use “Ref. [3]” or “reference [3]” except at the beginning of
-a sentence: “Reference [3] was the first ...” Here are a few examples.    \autocite{huang_ipv6_2014}
+\section{Acknowledgment}
+We would like to acknowledge the ASU VLAB for their support of tools and
+services for demonstration and development of this project.
+
 \printbibliography
-
-    \end{document}
+\clearpage
+\begin{landscape}
+\begin{table}%[!t]
+%\renewcommand{\arraystretch}{1.3}
+\caption{Risk Management}
+\label{tab:riskmanagement}
+\centering
+\begin{tabular}{c||c||p{2in}||p{2in}}
+\hline
+\bfseries Risk Description & \bfseries Risk of Failure & \bfseries Consequence of Failure & \bfseries Mitigation Strategy\\
+\hline\hline
+Connections between components must be secure
+& Low
+& Product would still function, but would lack security – information assurance will suffer
+& Plan to include security on component connections ahead of time. Follow best practices (SSL/TLS)\\
+\hline
+Evaluation of Project depends on proper vehicle agents
+& Medium
+& System is unable to be tested if vehicle agents are inoperable or incorrect
+& Vehicle agents will be designed first to ensure compatibility with all other components. Thorough review and testing of component to ensure proper functionality\\
+\hline
+Improper configuration of components
+& Medium
+& Components do not communicate properly with each other. System functionality is void
+& Thorough reviews and testing of components to ensure proper functionality and communication\\
+\hline
+Incorrect PKI implementation and/or configuration
+& Medium
+& Puts all identified security domains at risk. PKI used becomes useless. System becomes vulnerable to outside attacks i.e. MITM
+& Follow best practices and standards. No re-invention of the wheel\\
+\hline
+Service Uptime (web reliably)
+& High
+& Product is unusable if network connections are not operable
+& Redundancy. Cloud hosting to alleviate hardware reliance\\
+\hline
+\end{tabular}
+\end{table}
+\end{landscape}
+\end{document}
 
 
