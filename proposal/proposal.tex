@@ -39,7 +39,7 @@ vehicles, secure signaling and control takes center stage as there will be
 no human to troubleshoot if the signal and control systems are compromised,
 making vehicles vulnerable to be stolen, damaged, or otherwise harmed. The
 scope of this project is to build a secure signaling and control system with
-mechanisms to drastically reduce if not eliminate the attack vectors. The
+mechanisms to drastically reduce if not eliminate these attack vectors. The
 main tasks in this project are to build a front-end interface for users to
 give instructions built upon a Representational State Transfer (REST)
 architecture, set up Extensible Messaging and Presence Protocol (XMPP)
@@ -73,7 +73,7 @@ RoboTractor will leverage the Django Web framework \autocite{_django_2014}
 , to realize the required
 interfaces.  Figure~\ref{fig:softwarecomponents} describes the connection of
 these components.  The combination of XMPP and REST in RoboTractor is
-a demonstration of how to leverage the existing HTTP development environment
+a demonstration of how to extend the existing HTTP development environment
 i.e. "the web of things" into a stateful protocol. HTTP is by design
 stateless. XMPP on the other hand is a stateful streaming connection between two
 clients. In this case the Tractor and a command server.  To achieve this mesh we
@@ -90,8 +90,8 @@ TastyPie provides REST \autocite{_toastdriven/django-tastypie_2014} by extending
 the existing Django Models.
 \subsubsection{BOSH Interchange}
 Punjab is an Django plugin implementation of BOSH
-\autocite{_twonds/punjab_2014}.  In addition to BOSH, this library also combines
-th ejabberd Users with Django Users to provide a single authentication and
+\autocite{_twonds/punjab_2014}.  In addition to BOSH, this library combines
+the ejabberd Users with Django Users to provide a single authentication and
 authorization framework. While this demo project will have a single user type,
 this combination is critical to maintain proper use management and
 least-privilege authorization.
@@ -103,13 +103,18 @@ least-privilege authorization.
 \label{fig:softwarecomponents}
 \end{figure}
 
-Describe needed software (applications, tools, APIs) to develop this project.
-\subsection{Security Model (optional)}
-This section is needed if the project is focusing on security. Describe attack source, attack goal, attach methods, and attack consequences. 
 \section{Project Description}
-Summarize the project description here.
-\subsection{Project Overview}
-Describe how many project tasks are proposed and what their relations (dependency) in the project. Use diagram is needed. Provide midterm and final goals of this project.
+Implementation is divided into 2 primary phases (Marked as milestones on the
+attached gantt chart).  The first phase is an integration phase connecting
+the various libraries and off the shelf components. It is critical that this
+integration does not weaken, but rather strengthens the security properties
+provided by each independent component. 
+
+The second phase is the extension of these components to provide command and
+control of agricultural vehicles. For schedule mitigation, David and Arun are
+scheduled to begin this phase before the framework is assembled. Once the
+framework is in place, David and Arun's interface designs may be merged with the
+overall system. 
 \subsection{Task 1 : Development Environment}
 The development environment consists of configuring all the tools needed to
 portably work with the software package. This will involve installing project
