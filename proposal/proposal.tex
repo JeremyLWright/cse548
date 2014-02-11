@@ -15,7 +15,7 @@
 \begin{document}
 %
 % paper title
-\title{RoboTractor}
+\title{RoboTractor: A Secure Signaling and Control System for Remote Management of Agricultural Vehicles using XMPP and REST}
 \author{
 \IEEEauthorblockN{Jeremy Wright}
 \IEEEauthorblockA{Arizona State University\\jlwrigh1@asu.edu}
@@ -103,6 +103,14 @@ least-privilege authorization.
 \label{fig:softwarecomponents}
 \end{figure}
 
+\subsection{Security Model}
+RoboTractor deals with two primary security realms: One involving the vehicles
+and other assets, and one involving the user-interface and web components.
+Because the project is web-based and uses PKI, the potential avenues for
+attacks are attacks against web applications, and cryptographic attacks.
+Because these attacks make up a risk factor of the project, they are further
+described in Table~\ref{tab:riskmanagement}. 
+
 \section{Project Description}
 Implementation is divided into 2 primary phases (Marked as milestones on the
 attached gantt chart).  The first phase is an integration phase connecting
@@ -151,14 +159,14 @@ The Web interface will exist as a "single-page" app who leverages AJAX
 principles over this REST API. 
 \subsection{Project Task Allocation}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.4\textwidth]{ResourceAllocation.pdf}
-\caption{Resource Allocation}
-\label{fig:resourceallocation}
-\end{figure}
-Jeremy Wright will serve as the project lead since he has past experience with
-Python based web applications. 
+From the tasks outlined in section III, the breakdown of work will be as follows:
+Jeremy Wright will work on configuring the development environments and the REST Interface.
+He will operate as the project lead due to his experience in Python-based Web Applications.
+Arun Balaji Buduru will work on the Server Backend and Frontend UI components.
+David Lucero will work primarily on the Demo Tractor agents and also XMPP implementation.
+Each group member will have approximately 30\% workload of the project with the remaining
+10\% shared due to the interconnected nature of all components. A detailed task breakdown
+can be seen in the attached Timeline.
 
 \subsection{Deliverables}
 \begin{enumerate}
