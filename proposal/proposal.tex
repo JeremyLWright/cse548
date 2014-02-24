@@ -16,6 +16,7 @@
 %
 % paper title
 \title{RoboTractor: A Secure Signaling and Control System for Remote Management of Agricultural Vehicles using XMPP and REST}
+
 \author{
 \IEEEauthorblockN{Jeremy Wright}
 \IEEEauthorblockA{Arizona State University\\jlwrigh1@asu.edu}
@@ -30,22 +31,19 @@
 
 
 \begin{abstract}
-The need for the automation of vehicles is increasing due to improved
-efficiency and reduced operational costs. Even though the law requires human
-presence in self-driven agricultural vehicles, recent trends show that as
-our confidence in these self-driven vehicles grow, these requirements on
-human presence will be waived. Once we remove humans from control of these
-vehicles, secure signaling and control takes center stage as there will be
-no human to troubleshoot if the signal and control systems are compromised,
-making vehicles vulnerable to be stolen, damaged, or otherwise harmed. The
-scope of this project is to build a secure signaling and control system with
-mechanisms to drastically reduce if not eliminate these attack vectors. The
-main tasks in this project are to build a front-end interface for users to
-give instructions built upon a Representational State Transfer (REST)
-architecture, set up Extensible Messaging and Presence Protocol (XMPP)
-server and client with required authentication and data integrity check
-mechanisms, and build a simulated automated vehicle, capable of
-interfacing with the XMPP components and front-end.  
+The need for the automation of vehicles is increasing due to
+improved efficiency and reduced operational costs. The scope of this
+project is to build a secure signaling and control system with
+mechanisms to drastically reduce if not eliminate the secure signal
+and control systems from being are compromised, making automated
+vehicles vulnerable to be stolen, damaged, or otherwise harm the
+environment. The main tasks in this project are to build a front-end
+interface for users to give instructions built upon a Representational
+State Transfer (REST) architecture, set up Extensible Messaging and
+Presence Protocol (XMPP) server and client with required
+authentication and data integrity check mechanisms, and build a
+simulated automated vehicle, capable of interfacing with the XMPP
+components and front-end.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -53,19 +51,17 @@ interfacing with the XMPP components and front-end.
 \end{IEEEkeywords}
 
 \section{Introduction}
-Our goal in this project is to build a secure signaling and control system to
-enable the effective management of the agricultural vehicles. The primary
-problem to be addressed in this project is to securely interface and/or
-communicate between user and agricultural vehicles using XMPP and REST
-protocols. This is very important because authentication of vehicles and data
-integrity, here the path plan and location feedback transmission needs to be
-secured and protected from eavesdroppers. This will prevent attackers from
-compromising and/or stealing these vehicles. In this project we use Django to
-handle the front end interface for the users. We use python libraries to
-interface between user and path generator server where we use XMPP and REST
-protocols, and XMPP clients to control the agricultural vehicles. We expect to
-have a comprehensive tool that translates the abstract user inputs into
-executable actions for agricultural vehicles in a secure manner.
+The most important requirement in developing a secure signal and control
+system is ensuring authentication of vehicles and data integrity, here
+the path plan and location feedback transmission needs to be secured
+and protected from eavesdroppers, preventing attackers from
+compromising and/or stealing these vehicles. In this project we use
+Django to handle the front end interface for the users. We use python
+libraries to interface between user and path generator server where we
+use XMPP and REST protocols, and XMPP clients to control the
+agricultural vehicles. We expect to have a comprehensive tool that
+translates the abstract user inputs into executable actions for
+agricultural vehicles in a secure manner.
 \section{System Models}
 
 \subsection{System Model}
@@ -104,16 +100,25 @@ least-privilege authorization.
 \end{figure}
 
 \subsection{Security Model}
-RoboTractor deals with two primary security realms: One involving the vehicles
-and other assets, and one involving the user-interface and web components.
-Because the project is web-based and uses PKI, the potential avenues for
-attacks are attacks against web applications, and cryptographic attacks.
-Because these attacks make up a risk factor of the project, they are further
-described in Table~\ref{tab:riskmanagement}. 
+RoboTractor deals with two primary security classes: One involving the vehicles
+and other assets, and one involving the system components and their communication channels.
+Because the project is web-based and uses PKI, numerous attack models have
+been created that this project will deal with. Within the class of communication channels,
+attacks may be present against the authentication systems of both users and assets. Robotractor will employ
+advanced two-factor authentication. Usage of TLS and other best common practices will help to prevent
+against replay attacks on the system, and also for establishing a secure session between assets and control.
+A dual-encryption scheme has been devised to send encrypted control signals within an encrypted XMPP stanza
+to ensure high information assurance. Because this project will utilize PKI, key protection is important. To this end
+the RoboTractor project plans to secure keys on assets with a Trusted Platform Module or relevant simulated facsimile.
+By making both key-pairs private and secure, RoboTractor provides advanced communication security.
+On the other end, the server components must be secured as well using best common practices in server defense, firewall,
+patches, updates, etc. Additionally, the RoboTractor system will implement an advanced GPS location reporting system
+to provide physical security in case of asset theft. By defending against these attack models, the RoboTractor project
+presents the realization of an advanced system for signaling and control with high security. 
 
 \section{Project Description}
 Implementation is divided into 2 primary phases (Marked as milestones on the
-attached gantt chart).  The first phase is an integration phase connecting
+attached Gantt chart).  The first phase is an integration phase connecting
 the various libraries and off the shelf components. It is critical that this
 integration does not weaken, but rather strengthens the security properties
 provided by each independent component. 
@@ -169,15 +174,28 @@ Each group member will have approximately 30\% workload of the project with the 
 can be seen in the attached Timeline.
 
 \subsection{Deliverables}
+
+Midterm Deliverables:
 \begin{enumerate}
-\item Web application for sending control commands to remote machine, and
-displaying their current location
-\item A Simulated vehicle capable of acting on XMPP command send via the Web
-interface.
-\item An administration panel for configuring vehicles.
+\item Functioning REST Interface
+\item Front-end Test Interface
 \item API documentation for using the REST interface as an external service.
 \item API documentation for using the XMPP interface to act as a vehicle.
+\item Finalized Design of Vehicle simulator
+\item Interim Progress Report
+\item Updated Project Schedule
 \end{enumerate}
+
+Final Deliverables:
+\begin{enumerate}
+\item Finalized back-end configuration
+\item Administration panel for configuring vehicles.
+\item Finalized front-end interface
+\item Vehicle Simulator with working component interfaces
+\item Final Project Report
+\end{enumerate}
+
+
 \subsection{Project Timeline}
 The attached project timeline (generated from Microsoft Project) describes the
 overall tasks of the project.
@@ -192,9 +210,6 @@ In this proposal we intend to build a remote control system leveraging existing
 internet technologies XMPP and REST. Future work based on this approach may
 include asset management for corporate farm management.
 
-\section{Acknowledgment}
-We would like to acknowledge the ASU VLAB for their support of tools and
-services for demonstration and development of this project.
 
 \printbibliography
 \clearpage
