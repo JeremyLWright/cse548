@@ -1,12 +1,43 @@
 from django.conf.urls import patterns, include, url
-
+from django.core.urlresolvers import reverse_lazy
 from django.contrib import admin
+
+
+from .views import (ExampleSecretView, HomeView, RegistrationView,
+                    RegistrationCompleteView)
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'robotractor.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+LOGIN_URL=reverse_lazy('two_factor:login')
+LOGIN_REDIRECT_URL=reverse_lazy('two_factor:profile')
 
+urlpatterns = patterns(
+	'',
+    url(
+        regex=r'^$',
+        view=HomeView.as_view(),
+        name='home',
+    ),
+    url(
+        regex=r'^account/logout/$',
+        view='django.contrib.auth.views.logout',
+        name='logout',
+    ),
+    url(
+        regex=r'^secret/$',
+        view=ExampleSecretView.as_view(),
+        name='secret',
+    ),
+    url(
+        regex=r'^account/register/$',
+        view=RegistrationView.as_view(),
+        name='registration',
+    ),
+    url(
+        regex=r'^account/register/done/$',
+        view=RegistrationCompleteView.as_view(),
+        name='registration_complete',
+    ),
+    url(r'', include('two_factor.urls', 'two_factor')),
+    url(r'', include('user_sessions.urls', 'user_sessions')),
     url(r'^admin/', include(admin.site.urls)),
 )
