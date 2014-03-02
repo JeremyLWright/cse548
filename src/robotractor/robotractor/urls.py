@@ -2,6 +2,11 @@ from django.conf.urls import patterns, include, url
 from django.core.urlresolvers import reverse_lazy
 from django.contrib import admin
 
+from tastypie.api import Api
+from backend.api import TractorResource
+
+v1_api = Api(api_name='v1')
+v1_api.register(TractorResource())
 
 from .views import (ExampleSecretView, HomeView, RegistrationView,
                     RegistrationCompleteView)
@@ -40,4 +45,5 @@ urlpatterns = patterns(
     url(r'', include('two_factor.urls', 'two_factor')),
     url(r'', include('user_sessions.urls', 'user_sessions')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(v1_api.urls)),
 )
