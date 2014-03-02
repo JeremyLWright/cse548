@@ -8,8 +8,7 @@ from backend.api import TractorResource
 v1_api = Api(api_name='v1')
 v1_api.register(TractorResource())
 
-from .views import (ExampleSecretView, HomeView, RegistrationView,
-                    RegistrationCompleteView)
+from .views import (FarmPanelView, HomeView, RegistrationView, RegistrationCompleteView)
 admin.autodiscover()
 
 LOGIN_URL=reverse_lazy('two_factor:login')
@@ -28,9 +27,9 @@ urlpatterns = patterns(
         name='logout',
     ),
     url(
-        regex=r'^secret/$',
-        view=ExampleSecretView.as_view(),
-        name='secret',
+        regex=r'^panel/$',
+        view=FarmPanelView.as_view(),
+        name='panel',
     ),
     url(
         regex=r'^account/register/$',

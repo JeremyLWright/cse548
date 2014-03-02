@@ -31,5 +31,5 @@ class RegistrationCompleteView(TemplateView):
 
 
 @class_view_decorator(never_cache)
-class ExampleSecretView(OTPRequiredMixin, TemplateView):
-    template_name = 'secret.html'
+class FarmPanelView(OTPRequiredMixin, TemplateView):
+    template_name = 'farm_view.html'
