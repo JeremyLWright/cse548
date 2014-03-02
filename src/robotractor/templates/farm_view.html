@@ -1,0 +1,34 @@
+{% extends "_base.html" %}
+{% load future i18n %}
+
+{% block nav_secret %}active{% endblock %}
+
+{% block content %}
+  <h1>{% block title %}My Farm{% endblock %}</h1>
+
+  <p>Your current tractors:</p>
+  <div id="tractors">
+      <!-- tractor locations -->
+  </div>
+{% endblock %}
+
+{% block extrajavascript %}
+<script type="text/javascript">
+$(document).ready(function()
+        {
+        $.ajax({
+            url: "/api/v1/tractor/?format=json",
+            cache: false
+            })
+        .done(function(obj) {
+            var div = ""
+            for (var i in obj.objects)
+            {
+                div = div + "<h2>"+obj.objects[i].name+"</h2>";
+            }
+            $("#tractors").replaceWith(div);
+            console.log(obj)
+        });
+        });
+  </script>
+{% endblock %}
