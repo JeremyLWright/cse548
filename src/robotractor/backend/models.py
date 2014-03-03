@@ -18,6 +18,21 @@ class Farm(models.Model):
     def __unicode__(self):
         return self.name
 
+class Job(models.Model):
+    name = models.CharField(max_length=200)
+    boundary = models.ForeignKey(WorkingBoundary)
+    created_time = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+    def __unicode__(self):
+        return self.name
+
+class Waypoint(models.Model):
+    lat = models.FloatField()
+    longitude = models.FloatField()
+    sort_order = models.IntegerField()
+    job = models.ForeignKey(Job)
+
+
 
 class Tractor(models.Model):
     owner = models.ForeignKey(Farm)
@@ -28,4 +43,3 @@ class Tractor(models.Model):
     def __unicode__(self):
         return self.name
 
-	
