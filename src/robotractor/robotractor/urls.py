@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, include, url
-from django.core.urlresolvers import reverse_lazy
 from django.contrib import admin
 
 from tastypie.api import Api
@@ -13,8 +12,6 @@ v1_api.register(JobResource())
 from .views import (FarmPanelView, HomeView, RegistrationView, RegistrationCompleteView)
 admin.autodiscover()
 
-LOGIN_URL=reverse_lazy('two_factor:login')
-LOGIN_REDIRECT_URL=reverse_lazy('two_factor:profile')
 
 urlpatterns = patterns(
 	'',

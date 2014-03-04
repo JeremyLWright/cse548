@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.core.urlresolvers import reverse_lazy
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -89,3 +90,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 TEMPLATE_DIRS=[os.path.join(BASE_DIR, 'templates')]
+LOGIN_URL=reverse_lazy('two_factor:login')
+LOGIN_REDIRECT_URL=reverse_lazy('two_factor:profile')
