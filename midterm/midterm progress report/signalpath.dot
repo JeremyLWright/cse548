@@ -1,0 +1,17 @@
+
+digraph G {
+
+in [label="Job Input Interface"];
+serial [label="Serialize to JSON"];
+post [label="POST to Web Service"];
+db [label="Database (SQLite)"];
+xmpp [label="XMPP Server"];
+serial2 [label="Serialize Job File"];
+aes [label="Asymmetric Encrypt Stanza"];
+ssl [label="Secure SSL Channel"];
+machine [label="Tractor"];
+
+in -> serial -> post -> db -> serial2 -> aes -> xmpp -> ssl -> machine;
+
+
+}
