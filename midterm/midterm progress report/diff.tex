@@ -1,7 +1,7 @@
 \documentclass[conference,12pt]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL ..\..\proposal\proposal.tex   Mon Feb 24 15:13:53 2014
-%DIF ADD proposal.tex                  Fri Mar  7 19:50:21 2014
+%DIF ADD proposal.tex                  Sat Mar  8 12:42:20 2014
 \usepackage{pdflscape}
 \usepackage{hyperref}
 \usepackage{tabularx}
@@ -79,7 +79,25 @@ components and front-end.
 \end{IEEEkeywords}
 
 \section{Introduction}
-The most important requirement in developing a secure signal and control
+\DIFaddbegin \IEEEPARstart{A}{griculture} \DIFadd{has a growing problem. Crop input costs such as water,
+fertilizer, pesticides, and fuel, are increasing. The global population is
+increasing driving the need for more food. Local, State, and Federal governments
+are increasing oversight and reporting requirements on growers. Land area
+available for planting, and harvesting is decreasing globally. All this pushes
+farmers to lean on technology to improve their efficiency while reducing
+recurrent costs. Take government over sight requirements
+}\autocite{_growers_oversight}\DIFadd{, growers are required to track where, and how much
+material is spread into the fields.  This can be a considerable overhead for
+growers, however an automated machine can do this quite easily, and in real-time
+if  desired.  This project demonstrates how to securely connect an agricultural
+machine to an automation server in a secure manner using existing internet
+technologies. Using existing technologies is a critical point. The market is
+already stretched thin, and incurring new infrastructure in rural areas can be
+prohibitively expensive, however leveraging the existing Internet infrastructure we
+can provide high levels of service in a secure manner.
+}
+
+\DIFaddend The most important requirement in developing a secure signal and control
 system is ensuring authentication of vehicles and data integrity, \DIFdelbegin \DIFdel{here
 the }\DIFdelend \DIFaddbegin \DIFadd{and securing communication channels.
 The }\DIFaddend path plan and location feedback transmission needs to be secured
@@ -193,7 +211,14 @@ agricultural vehicle .
 \DIFadd{The midterm deliverable for this task was to finalize the design specifications of the tractor simulator. This has been achieved after multiple team discussions, and a barebones
 state machine vehicle simulator has been written in python. As more tasks are completed, the simulator is to be updated with its required functionality such as XMPP communication, path processing, and status reporting.
 }\DIFaddend \subsection{Task 4: Frontend UI}
-The "single-page" web application is the modern design methodology to web apps
+\DIFaddbegin \begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{../PlottingV1.png}
+\caption{\DIFaddFL{Job Input Tool}}
+\label{fig:jobinput}
+\end{figure}
+
+\DIFaddend The "single-page" web application is the modern design methodology to web apps
 today. Leveraging this design architecture the Frontend will query the REST API
 to draw the position of all tractors within a Google Map context. \DIFaddbegin \DIFadd{Additionally, 
 the frontend user interface is to be highly secure. }\DIFaddend This task has

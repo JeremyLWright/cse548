@@ -50,6 +50,23 @@ components and front-end.
 \end{IEEEkeywords}
 
 \section{Introduction}
+\IEEEPARstart{A}{griculture} has a growing problem. Crop input costs such as water,
+fertilizer, pesticides, and fuel, are increasing. The global population is
+increasing driving the need for more food. Local, State, and Federal governments
+are increasing oversight and reporting requirements on growers. Land area
+available for planting, and harvesting is decreasing globally. All this pushes
+farmers to lean on technology to improve their efficiency while reducing
+recurrent costs. Take government over sight requirements
+\autocite{_growers_oversight}, growers are required to track where, and how much
+material is spread into the fields.  This can be a considerable overhead for
+growers, however an automated machine can do this quite easily, and in real-time
+if  desired.  This project demonstrates how to securely connect an agricultural
+machine to an automation server in a secure manner using existing internet
+technologies. Using existing technologies is a critical point. The market is
+already stretched thin, and incurring new infrastructure in rural areas can be
+prohibitively expensive, however leveraging the existing Internet infrastructure we
+can provide high levels of service in a secure manner.
+
 The most important requirement in developing a secure signal and control
 system is ensuring authentication of vehicles and data integrity, and securing communication channels.
 The path plan and location feedback transmission needs to be secured
@@ -120,6 +137,13 @@ attached Gantt chart).  The first phase is an integration phase connecting
 the various libraries and off the shelf components. It is critical that this
 integration does not weaken, but rather strengthens the security properties
 provided by each independent component. 
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{signalpath.pdf}
+\caption{High Level Signal Path}
+\label{fig:signalpath}
+\end{figure}
+
 
 The second phase is the extension of these components to provide command and
 control of agricultural vehicles. For schedule mitigation, David and Arun are
@@ -140,9 +164,23 @@ XMPP Implementation is a configuration task to setup the ejabberd
 server and connect it into the HTTP Framework. Once this is in place the XMPP
 Clients may start working. The XMPP client/server components and interfacing with them is not a midterm deliverable, and is to be finished before final submission.
 \subsection{Task 3: Demo Tractor}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{machine.pdf}
+\caption{Tractor Software State Machine}
+\label{fig:tractorstatemachine}
+\end{figure}
 The midterm deliverable for this task was to finalize the design specifications of the tractor simulator. This has been achieved after multiple team discussions, and a barebones
 state machine vehicle simulator has been written in python. As more tasks are completed, the simulator is to be updated with its required functionality such as XMPP communication, path processing, and status reporting.
 \subsection{Task 4: Frontend UI}
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{../PlottingV1.png}
+\caption{Job Input Tool}
+\label{fig:jobinput}
+\end{figure}
+
 The "single-page" web application is the modern design methodology to web apps
 today. Leveraging this design architecture the Frontend will query the REST API
 to draw the position of all tractors within a Google Map context. Additionally, 
@@ -181,7 +219,7 @@ Midterm Deliverables:
 \begin{enumerate}
 \item Functioning REST Interface (completed)
 \item Front-end Test Interface (completed, with additional two factor-authentication)
-\item API documentation for using the REST interface as an external service. (moved to final deliverable)
+\item API documentation for using the REST interface as an external service. (completed)
 \item API documentation for using the XMPP interface to act as a vehicle. (moved to final deliverable)
 \item Finalized Design of Vehicle simulator (completed, with additional python test implementation)
 \item Interim Progress Report (completed)
