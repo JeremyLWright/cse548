@@ -1,7 +1,7 @@
 \documentclass[conference,12pt]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL ..\..\proposal\proposal.tex   Sat Mar  8 21:17:55 2014
-%DIF ADD proposal.tex                  Sun Mar  9 09:15:03 2014
+%DIF ADD proposal.tex                  Sun Mar  9 10:35:25 2014
 \usepackage{pdflscape}
 \usepackage{hyperref}
 \usepackage{tabularx}
@@ -75,8 +75,10 @@ components and front-end.
 \end{abstract}
 
 \begin{IEEEkeywords}
-    Secure signaling and control, remote management, agricultural vehicles automation, self-driven vehicles
-\end{IEEEkeywords}
+    Secure signaling and control, remote management, agricultural vehicles
+    automation, self-driven vehicles\DIFaddbegin \DIFadd{, TPM, root of trust, trusted platform,
+    TrustZone, ARM, machine automation
+}\DIFaddend \end{IEEEkeywords}
 
 \section{Introduction}
 \DIFaddbegin \IEEEPARstart{A}{griculture} \DIFadd{has a growing problem. Crop input costs such as water,
@@ -112,8 +114,25 @@ agricultural vehicles.
 We expect }\DIFdelend \DIFaddbegin \DIFadd{our Front-end, server, and client-side vehicle simulators.
 The end-goal of RoboTractor is }\DIFaddend to have a comprehensive tool that
 translates the abstract user inputs into \DIFaddbegin \DIFadd{remotely }\DIFaddend executable actions for
-agricultural vehicles in a secure manner \DIFaddbegin \DIFadd{using advanced web, network, and cryptographic techniques}\DIFaddend .
-\section{System Models}
+agricultural vehicles in a secure manner \DIFdelbegin \DIFdel{.
+}\DIFdelend \DIFaddbegin \DIFadd{using advanced web, network, and cryptographic techniques.
+}
+
+\DIFadd{RoboTractor is a framework to provide integrity, authentication, and root of
+trust services for machine automation specifically within an agriculture domain.
+ECU manufacturers will particularly be interested in the root-of-trust details
+described in Section~\ref{sec:xmpp}.  Agricultural service providers have
+typically be subject to locality issues. Historically, it's been difficult to
+provide agricultural services at a reasonable cost, at any appreciable distance
+from the farm itself.  RoboTractor provides a conduit for service providers to
+provide their services at a distance. This allows expert agronomists to consult
+with farms at any distance.  Not only can this reduce cost, but it also allows
+growers access to a marketplace of services before unavailable to them.
+RoboTractor is the foundation for connecting the needs of the growers to the
+providers.  
+}
+
+\DIFaddend \section{System Models}
 
 \subsection{System Model}
 RoboTractor will leverage the Django Web framework \autocite{_django_2014}
@@ -169,7 +188,8 @@ to provide physical security in case of asset theft. By defending against these 
 presents the realization of an advanced system for signaling and control with high security. 
 
 \section{Project Description}
-Implementation is divided into 2 primary phases (Marked as milestones on the
+\DIFaddbegin \label{sec:proj_desc}
+\DIFaddend Implementation is divided into 2 primary phases (Marked as milestones on the
 attached Gantt chart).  The first phase is an integration phase connecting
 the various libraries and off the shelf components. It is critical that this
 integration does not weaken, but rather strengthens the security properties
@@ -216,16 +236,41 @@ described in }\autocite{_django_2014}\DIFadd{. The Development environment consi
 }
 
 \DIFaddend \subsection{Task 2: XMPP Implementation}
-XMPP Implementation is a configuration task to setup the ejabberd server and
-connect it into the HTTP Framework. \DIFdelbegin \DIFdel{Once this is in place the XMPP Clients may start working.
-}\DIFdelend \DIFaddbegin \DIFadd{The XMPP client/server components and
+\DIFaddbegin \label{sec:xmpp}
+\DIFaddend XMPP Implementation is a configuration task to setup the ejabberd server and
+connect it into the HTTP Framework. \DIFdelbegin \DIFdel{Once this is in place the XMPP
+Clients may start working.  }\DIFdelend \DIFaddbegin \DIFadd{The XMPP client/server components and
 interfacing with them is not a midterm deliverable, and is to be finished before
 final submission.
 }
 
+\DIFadd{XMPP provides an SSL/TLS connection between the tractor, and the server. This
+allows a base level of secure communication.  However to augment the security
+model, we provide additional asymmetric encryption of the command structures
+in each XMPP stanza.  This also leveraging the growing a Trusted Platform
+Module (TMP). TMP is a hardware module, either part of the compute engine
+complex or as in ARM processors integrated into the CPU core itself.  ARM's
+offering is called TrustZone.  These security services provide a hardened
+storage location for private keys.  One cannot extract the key without
+destroying the device, and the key itself.  These devices also leverage a best
+practice called ``Root of Trust'' to protect against known cipher attacks
+}\autocite{_tpm_2013}\DIFadd{.  The
+hardware modules only decrypt/encrypt material if the system is in a ``secure''
+state.  Typically this is obtained by the compute core booting an internal,
+untamperable ROM loader.  This loaders verifies the second stage bootloader with
+a cryptographic signature stored in the TPM device at production time. If this
+signtuare passes, the TPM is unlocked and the hardware may continue booting. If
+any signature fails, the TPM remains locked, and refused to cipher information.
+For the purposes of RoboTractor this behavior will be simulated at the API
+level.  However hardware integrators may leverage the best practices laid out
+here to implement a ``root of trust'' to include the automation server.  
+}
+
 \DIFaddend \subsection{Task 3: Demo Tractor}
-\DIFdelbegin \DIFdel{The Demo tractor is the complementary component to the Frontend UI. This is the virtual machine , a piece of software which simulates a real tractor, or
-agricultural vehicle. }\DIFdelend \DIFaddbegin 
+\DIFdelbegin \DIFdel{The Demo tractor is the complementary component to the Frontend UI.  This is the
+virtual machine,
+a piece of software which simulates a real tractor , or
+agricultural vehicle }\DIFdelend \DIFaddbegin 
 
 \begin{figure}
 \centering
@@ -253,8 +298,8 @@ Figure~\ref{fig:jobfile}.
 database. When the Tractor is instructed to run a job, the Tractor downloads the
 Job file from the server over its XMPP connection. The backend server is
 responsible for translating the database models into JSON encoded Job
-File.
-}
+File }\autocite{_json_2014}\DIFaddend .
+\DIFaddbegin 
 
 \DIFaddend \subsection{Task 4: Frontend UI}
 \DIFaddbegin \begin{figure}
@@ -269,32 +314,93 @@ today. Leveraging this design architecture the Frontend will query the REST API
 to draw the position of all tractors within a Google Map context. \DIFaddbegin \DIFadd{Additionally, 
 the frontend user interface is to be highly secure. }\DIFaddend This task has
 2 high level sub tasks:
-\begin{enumerate}
+\DIFaddbegin 
+
+\DIFaddend \begin{enumerate}
 \item Path generation
 \item Map rendering
-\end{enumerate}
-Path generation is the primary deliverable of this \DIFdelbegin \DIFdel{project}\DIFdelend \DIFaddbegin \DIFadd{task}\DIFaddend . The user shall be
-able to input a path for a given tractor to drive. The Tractor will then receive
-this path over the REST to XMPP \DIFdelbegin \DIFdel{gateway}\DIFdelend \DIFaddbegin \DIFadd{channel}\DIFaddend .  The UI may then periodically query the
-position of the tractor and update it on the Google Map. \DIFaddbegin \DIFadd{Currently, a test-interface has been completed to meet the midterm deliverables, with additional functionality forthcoming.
-}\DIFaddend \subsection{Task 5: Server Backend}
+\DIFaddbegin \item \DIFadd{Two-Factor Authentication
+}\DIFaddend \end{enumerate}
+\DIFaddbegin 
+
+\DIFaddend Path generation is the primary deliverable of this \DIFdelbegin \DIFdel{project}\DIFdelend \DIFaddbegin \DIFadd{task}\DIFaddend . The user shall be able
+to input a path for a given tractor to drive. \DIFdelbegin \DIFdel{The Tractor }\DIFdelend \DIFaddbegin \DIFadd{Waypoints  input by
+the user, and sent to the backend web-service via the REST interface. The
+webservice stores the waypoints in a Model format until instructed to convert it
+to the Job Format and send it to the Tractor.
+}
+
+\DIFadd{The Tractor }\DIFaddend will then receive this
+path over the \DIFdelbegin \DIFdel{REST to XMPP gateway}\DIFdelend \DIFaddbegin \DIFadd{XMPP channel}\DIFaddend .  The UI \DIFdelbegin \DIFdel{may then periodically query the
+}\DIFdelend \DIFaddbegin \DIFadd{periodically queries REST endpoint for the
+current 
+}\DIFaddend position of the tractor and \DIFdelbegin \DIFdel{update }\DIFdelend \DIFaddbegin \DIFadd{updates }\DIFaddend it on the Google Map. \DIFaddbegin \DIFadd{Currently,
+a test-interface has been completed to meet the midterm deliverables, with
+additional functionality forthcoming.
+}
+
+\DIFaddend \subsection{Task 5: Server Backend}
 The Server Backend is the critical component which \DIFdelbegin \DIFdel{plumbs all the componentstogether}\DIFdelend \DIFaddbegin \DIFadd{connects all components}\DIFaddend .
-Extensive knowledge of Django will make this task easier. As it will
-require linking multiple components together in a orchestrated fashion. \DIFaddbegin \DIFadd{We have currently setup and tested our server running on Django, and will continue to update as needed over the course of the project.
-}\DIFaddend \subsection{Task 6: REST Interface}
+Extensive knowledge of Django will make this task easier. As it will require
+linking multiple components together in a orchestrated fashion. \DIFaddbegin \DIFadd{We have
+currently setup and tested our server running on Django, and will continue to
+update as needed over the course of the project. 
+}
+
+\DIFadd{This task also includes the Service Side Session-Based Authentication. The
+Server is responsible for generating the Time based One-Time Password (TOTP) as described in RFC 6238
+}\autocite{rydell_totp_2011}\DIFadd{.  TOTP provides the ``thing you have''
+authentication factor. RFC 6238 describes generating a QR code from a private
+seed value. This setups up the preshared key between the user and the web
+service. At this point the user may use an standard authenticator app, such as
+Microsoft Authenticator or Google Authenticator. At each sign on, the user is
+prompted for their password ``the thing you know'', as well as a random number
+from their device, ``the thing you have''.  Additionally, this helps prevent
+replay sign-on attacks since the transaction requires knowledge of the
+preshared key to generate the unique sign on credentials. The midterm
+presentation provides a video demo of this functionality.
+}
+
+\DIFaddend \subsection{Task 6: REST Interface}
 The REST interface will server the primary means of interacting with the site.
 The Web interface will exist as a "single-page" app \DIFdelbegin \DIFdel{who }\DIFdelend \DIFaddbegin \DIFadd{which }\DIFaddend leverages AJAX
-principles over this REST API. \DIFaddbegin \DIFadd{The REST interface is currently functional, and will be updated to interface further with the frontend interface and backend components as they are completed.
-}\DIFaddend \subsection{Project Task Allocation}
+principles over this REST API. \DIFaddbegin \DIFadd{The REST interface is currently functional, and
+will be updated to interface further with the frontend interface and backend
+components as they are completed.
+}
 
-From the tasks outlined in section III, the breakdown of work \DIFdelbegin \DIFdel{will be }\DIFdelend \DIFaddbegin \DIFadd{is }\DIFaddend as follows:
-Jeremy Wright \DIFdelbegin \DIFdel{will work on configuring }\DIFdelend \DIFaddbegin \DIFadd{has configured }\DIFaddend the development environments and the REST Interface. \DIFdelbegin \DIFdel{He will operate }\DIFdelend \DIFaddbegin \DIFadd{Jeremy is also looking into modelling trust zones which would allow us to simulate trusted hardware in actual vehicles.
-He is operating }\DIFaddend as the project lead due to his experience in Python-based Web Applications.
-Arun Balaji Buduru \DIFdelbegin \DIFdel{will work }\DIFdelend \DIFaddbegin \DIFadd{is working }\DIFaddend on the Server Backend and Frontend UI components. \DIFdelbegin \DIFdel{David Lucero will work }\DIFdelend \DIFaddbegin \DIFadd{He has completed a front-end test interface and is continuing to update it to achieve all required functionality.
-David Lucero is working }\DIFaddend primarily on the \DIFdelbegin \DIFdel{Demo Tractor }\DIFdelend \DIFaddbegin \DIFadd{Tractor simulation }\DIFaddend agents and also XMPP implementation. \DIFaddbegin \DIFadd{A barebones tractor simulation has been completed and will be continuously updated as the project progresses.
-}\DIFaddend Each group member \DIFdelbegin \DIFdel{will have }\DIFdelend \DIFaddbegin \DIFadd{has }\DIFaddend approximately 30\% workload of the project with the remaining
-10\% shared due to the interconnected nature of all components. A detailed task breakdown
-can be seen in the attached Timeline.
+\DIFadd{The REST API is self documenting in the JSON format. Each endpoint publishes the
+data, as well as its supported services on the }\texttt{\DIFadd{/schema?format=json}}
+\DIFadd{endpoints. While this provides API developers a straightforward way to view the
+supported data, and required formats, being in JSON, a developer can also
+dynamically discover the API and generate a site against it.  This is a common
+idiom in enterprise web applications using dependency injection.  RoboTractor
+supports this idiom over REST for more advanced use cases.
+}
+
+\DIFadd{Lastly, since the REST interface is a command interface to actual machines, it
+is critical that all requests are authenticated. The REST interface requires all
+queries to come from two-factor authenticated sessions (as managed by the
+backend service).  Each transaction contains a secured Cross-Site Forgery
+Request Token, and all transport is secured by SSL. This is in line with best
+practices for web services }\autocite{ibm_best_2002}\DIFadd{.
+}
+
+\DIFaddend \subsection{Project Task Allocation}
+
+From the tasks outlined in \DIFdelbegin \DIFdel{section III}\DIFdelend \DIFaddbegin \DIFadd{Section~\ref{sec:proj_desc}}\DIFaddend , the breakdown of work \DIFdelbegin \DIFdel{will be }\DIFdelend \DIFaddbegin \DIFadd{is }\DIFaddend as follows:
+Jeremy Wright \DIFdelbegin \DIFdel{will work on configuring }\DIFdelend \DIFaddbegin \DIFadd{has configured }\DIFaddend the development environments and the REST
+Interface. \DIFdelbegin \DIFdel{He will operate }\DIFdelend \DIFaddbegin \DIFadd{Jeremy is also looking into modelling trust zones which would allow
+us to simulate trusted hardware in actual vehicles.  He is operating }\DIFaddend as the
+project lead due to his experience in Python-based Web Applications.  Arun
+Balaji Buduru \DIFdelbegin \DIFdel{will work }\DIFdelend \DIFaddbegin \DIFadd{is working }\DIFaddend on the Server Backend and Frontend UI components. \DIFdelbegin \DIFdel{David Lucero will work }\DIFdelend \DIFaddbegin \DIFadd{He
+has completed a front-end test interface and is continuing to update it to
+achieve all required functionality.  David Lucero is working }\DIFaddend primarily on the
+\DIFdelbegin \DIFdel{Demo Tractor }\DIFdelend \DIFaddbegin \DIFadd{Tractor simulation }\DIFaddend agents and also XMPP implementation. \DIFaddbegin \DIFadd{A barebones tractor
+simulation has been completed and will be continuously updated as the project
+progresses.  }\DIFaddend Each group member \DIFdelbegin \DIFdel{will have }\DIFdelend \DIFaddbegin \DIFadd{has }\DIFaddend approximately 30\% workload of the project
+with the remaining 10\% shared due to the interconnected nature of all
+components. A detailed task breakdown can be seen in the attached Timeline.
 
 \subsection{Deliverables}
 
@@ -307,7 +413,7 @@ Midterm Deliverables:
 }\DIFaddend \item Finalized Design of Vehicle simulator \DIFaddbegin \DIFadd{(completed, with additional python test implementation)
 }\DIFaddend \item Interim Progress Report \DIFaddbegin \DIFadd{(completed)
 }\DIFaddend \item Updated Project Schedule \DIFaddbegin \DIFadd{(completed)
-}\item \DIFadd{Interim Project Powerpoint Presentation (completed)
+}\item \DIFadd{Interim Project PowerPoint Presentation (completed)
 }\DIFaddend \end{enumerate}
 
 Final Deliverables:
@@ -316,10 +422,11 @@ Final Deliverables:
 }\DIFdelend \DIFaddbegin \DIFadd{server configuration including easy installation script(s)
 }\DIFaddend \item \DIFdelbegin \DIFdel{Administration panel for configuring vehicles.
 }%DIFDELCMD < \item %%%
-\DIFdel{Finalized }\DIFdelend \DIFaddbegin \DIFadd{Completed, secure }\DIFaddend front-end interface \DIFaddbegin \DIFadd{including two-factor auth and SSL/TLS.
+\DIFdel{Finalized }\DIFdelend \DIFaddbegin \DIFadd{Completed, secure }\DIFaddend front-end interface \DIFaddbegin \DIFadd{including two-factor auth and
+    SSL/TLS (complete)
 }\DIFaddend \item Vehicle Simulator with working component interfaces \DIFaddbegin \DIFadd{and simulated trust zone functionality
 }\DIFaddend \item Final Project Report
-\DIFaddbegin \item \DIFadd{Final Project Powerpoint Presentation
+\DIFaddbegin \item \DIFadd{Final Project PowerPoint Presentation
 }\item \DIFadd{User-guide covering front-end interface, and including API documentation for REST and XMPP interfaces 
 }\DIFaddend \end{enumerate}
 
@@ -327,16 +434,34 @@ Final Deliverables:
 \subsection{Project Timeline}
 The attached project timeline (generated from Microsoft Project) describes the
 overall tasks of the project.
-\section{Risk Management of the project}
+\DIFaddbegin 
+
+\DIFaddend \section{Risk Management of the project}
 Several potential issues have been identified that may pose risk to successful
 completion of this project. These risks have been identified in Table
 \ref{tab:riskmanagement}. Along with the description, ratings have been assigned
 to each risk identified, and potential mitigation strategies are described.
 
 \section{Conclusion}
-In this proposal we intend to build a remote control system leveraging existing
-internet technologies \DIFaddbegin \DIFadd{such as }\DIFaddend XMPP and REST. Future work based on this approach may
-include asset management for corporate farm management.
+\DIFdelbegin \DIFdel{In this proposal we intend to build a remote control system leveraging existing
+internet technologies XMPP and REST . Future work based on this approach may
+include asset managementfor corporate farm management}\DIFdelend \DIFaddbegin \DIFadd{This work continues to explore how REST and XMPP can help alleviate the growing
+cost issues in Agriculture. By providing a base set of secure services future
+integrators can extend the provided data services over this base framework.
+Using the RoboTractor framework accelerates development by allowing content
+providers to provide secure, integrity, and authentication to their own
+agricultural focused service. 
+}
+
+\DIFadd{Agricultural machines themselves are growing in complexity, and the number of ECUs,
+integrated sensors, advanced engine management, government oversight
+documentation, prescription maps, real-time agronomy, crop consulting, genetic
+seeding, the list is unbounded. These services can all be accelerated, reduced
+cost, and increased quality and timeliness with the addition of secure
+connectivity. RoboTractor provides the framework for these content provides to
+provide such services. It's an exciting time to see where growers are
+incorporating technology to bring us our daily bread}\DIFaddend .
+
 
 \printbibliography
 \clearpage
