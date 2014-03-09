@@ -137,6 +137,7 @@ attached Gantt chart).  The first phase is an integration phase connecting
 the various libraries and off the shelf components. It is critical that this
 integration does not weaken, but rather strengthens the security properties
 provided by each independent component. 
+
 \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{signalpath.pdf}
@@ -158,11 +159,22 @@ A project homepage was provided to us via the ASU virtual lab project. This home
 source control in the form of a GIT repo which our project takes advantage of. Additionally, two
 virtual machines were provided via the ASU virtual lab project to use as our project servers. Setup of
 these servers was automated with the creation of a script in order to download all required software packages.
-Remaining work for this task is to enable proper connectivity between the two assigned VM's once all RoboTractor components are operational.
+Remaining work for this task is to enable proper connectivity between the two
+assigned Virtual Machines. 
+
+RoboTractor on built on the Django. The development environment is best
+described in \autocite{_django_2014}. The Development environment consists of
+2 Fabric configurations one for development and a second for deployment. This
+  allows development settings to be more relaxed facilitating quick coding
+  cycles, while the deployed configuration is more secure. Separate database
+  also prevent test data from polluting the deployed demo project.
+
 \subsection{Task 2: XMPP Implementation}
-XMPP Implementation is a configuration task to setup the ejabberd
-server and connect it into the HTTP Framework. Once this is in place the XMPP
-Clients may start working. The XMPP client/server components and interfacing with them is not a midterm deliverable, and is to be finished before final submission.
+XMPP Implementation is a configuration task to setup the ejabberd server and
+connect it into the HTTP Framework. The XMPP client/server components and
+interfacing with them is not a midterm deliverable, and is to be finished before
+final submission.
+
 \subsection{Task 3: Demo Tractor}
 
 \begin{figure}
@@ -171,8 +183,27 @@ Clients may start working. The XMPP client/server components and interfacing wit
 \caption{Tractor Software State Machine}
 \label{fig:tractorstatemachine}
 \end{figure}
-The midterm deliverable for this task was to finalize the design specifications of the tractor simulator. This has been achieved after multiple team discussions, and a barebones
-state machine vehicle simulator has been written in python. As more tasks are completed, the simulator is to be updated with its required functionality such as XMPP communication, path processing, and status reporting.
+The midterm deliverable for this task was to finalize the design specifications
+of the tractor simulator. This has been achieved after multiple team
+discussions, and a barebones state machine vehicle simulator has been written in
+python. As more tasks are completed, the simulator is to be updated with its
+required functionality such as XMPP communication, path processing, and status
+reporting. The state machine consumes the Job File format described in
+Figure~\ref{fig:jobfile}.  
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{job_file.pdf}
+\caption{Job File Format}
+\label{fig:jobfile}
+\end{figure}
+
+As described in Figure~\ref{fig:signalpath}, the job files are stored in the
+database. When the Tractor is instructed to run a job, the Tractor downloads the
+Job file from the server over its XMPP connection. The backend server is
+responsible for translating the database models into JSON encoded Job
+File \autocite{_json_2014}.
+
 \subsection{Task 4: Frontend UI}
 \begin{figure}
 \centering
@@ -190,19 +221,22 @@ the frontend user interface is to be highly secure. This task has
 \item Path generation
 \item Map rendering
 \end{enumerate}
-Path generation is the primary deliverable of this task. The user shall be
-able to input a path for a given tractor to drive. The Tractor will then receive
-this path over the REST to XMPP channel.  The UI may then periodically query the
-position of the tractor and update it on the Google Map. Currently, a test-interface has been completed to meet the midterm deliverables, with additional functionality forthcoming.
-\subsection{Task 5: Server Backend}
-The Server Backend is the critical component which connects all components.
-Extensive knowledge of Django will make this task easier. As it will
-require linking multiple components together in a orchestrated fashion. We have currently setup and tested our server running on Django, and will continue to update as needed over the course of the project.
-\subsection{Task 6: REST Interface}
-The REST interface will server the primary means of interacting with the site.
-The Web interface will exist as a "single-page" app which leverages AJAX
-principles over this REST API. The REST interface is currently functional, and will be updated to interface further with the frontend interface and backend components as they are completed.
-\subsection{Project Task Allocation}
+Path generation is the primary deliverable of this task. The user shall be able
+to input a path for a given tractor to drive. The Tractor will then receive this
+path over the REST to XMPP channel.  The UI may then periodically query the
+position of the tractor and update it on the Google Map. Currently,
+a test-interface has been completed to meet the midterm deliverables, with
+additional functionality forthcoming.  \subsection{Task 5: Server Backend} The
+Server Backend is the critical component which connects all components.
+Extensive knowledge of Django will make this task easier. As it will require
+linking multiple components together in a orchestrated fashion. We have
+currently setup and tested our server running on Django, and will continue to
+update as needed over the course of the project.  \subsection{Task 6: REST
+Interface} The REST interface will server the primary means of interacting with
+the site.  The Web interface will exist as a "single-page" app which leverages
+AJAX principles over this REST API. The REST interface is currently functional,
+and will be updated to interface further with the frontend interface and backend
+components as they are completed.  \subsection{Project Task Allocation}
 
 From the tasks outlined in section III, the breakdown of work is as follows:
 Jeremy Wright has configured the development environments and the REST Interface. Jeremy is also looking into modelling trust zones which would allow us to simulate trusted hardware in actual vehicles.

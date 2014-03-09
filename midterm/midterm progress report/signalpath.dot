@@ -1,17 +1,43 @@
 
 digraph G {
-
+subgraph cluster0 {
+node [style=filled, color=white];
+style=filled;
+color=lightgrey;
 in [label="Job Input Interface"];
 serial [label="Serialize to JSON"];
 post [label="POST to Web Service"];
+in -> serial -> post;
+label="Web Page";
+}
+
+
+subgraph cluster1 {
+node [style=filled, color=white];
+style=filled;
+color=lightgrey;
 db [label="Database (SQLite)"];
-xmpp [label="XMPP Server"];
 serial2 [label="Serialize Job File"];
 aes [label="Asymmetric Encrypt Stanza"];
+xmpp [label="XMPP Server"];
+db -> serial2 -> aes -> xmpp;
+label="Backend Web Service";
+}
+
 ssl [label="Secure SSL Channel"];
+
+subgraph cluster2 {
+node [style=filled, color=white];
+style=filled;
+color=lightgrey;
 machine [label="Tractor"];
 
-in -> serial -> post -> db -> serial2 -> aes -> xmpp -> ssl -> machine;
+
+label="Simulated Machine"
+}
+ssl -> machine;
+post -> db;
+xmpp -> ssl;
 
 
 }

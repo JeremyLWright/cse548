@@ -1,7 +1,7 @@
 \documentclass[conference,12pt]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL ..\..\proposal\proposal.tex   Sat Mar  8 21:17:55 2014
-%DIF ADD proposal.tex                  Sat Mar  8 21:17:51 2014
+%DIF ADD proposal.tex                  Sun Mar  9 09:15:03 2014
 \usepackage{pdflscape}
 \usepackage{hyperref}
 \usepackage{tabularx}
@@ -174,16 +174,16 @@ attached Gantt chart).  The first phase is an integration phase connecting
 the various libraries and off the shelf components. It is critical that this
 integration does not weaken, but rather strengthens the security properties
 provided by each independent component. 
+
 \DIFaddbegin \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{signalpath.pdf}
 \caption{\DIFaddFL{High Level Signal Path}}
 \label{fig:signalpath}
 \end{figure}
-\DIFaddend 
 
 
-The second phase is the extension of these components to provide command and
+\DIFaddend The second phase is the extension of these components to provide command and
 control of agricultural vehicles. For schedule mitigation, David and Arun are
 scheduled to begin this phase before the framework is assembled. Once the
 framework is in place, David and Arun's interface designs may be merged with the
@@ -192,9 +192,8 @@ overall system. \DIFdelbegin \subsection{\DIFdel{Task 1 : Development Environmen
 \addtocounter{subsection}{-1}%DIFAUXCMD
 \DIFdel{The development environment consists of configuring all the tools needed to portably work with the software package. This will involve installing project dependencies, and deployment scripts to allow all members of
 the team to work
-effectively together.
-The complete environment will be stored in git.
-}\DIFdelend \DIFaddbegin \DIFadd{As of the creation of this document, all Midterm deliverables have been achieved.
+effectively together. 
+The complete environment will be stored in git. }\DIFdelend \DIFaddbegin \DIFadd{As of the creation of this document, all Midterm deliverables have been achieved.
 The following tasks have been updated to reflect work currently done, and remaining future work.
 }
 
@@ -204,18 +203,29 @@ A project homepage was provided to us via the ASU virtual lab project. This home
 source control in the form of a GIT repo which our project takes advantage of. Additionally, two
 virtual machines were provided via the ASU virtual lab project to use as our project servers. Setup of
 these servers was automated with the creation of a script in order to download all required software packages.
-Remaining work for this task is to enable proper connectivity between the two assigned VM's once all RoboTractor components are operational.
-}\DIFaddend \subsection{Task 2: XMPP Implementation}
-XMPP Implementation is a configuration task to setup the ejabberd
-server and connect it into the HTTP Framework. Once this is in place the XMPP
-Clients may start working. \DIFdelbegin \subsection{\DIFdel{Task 3: Demo Tractor}}
-%DIFAUXCMD
-\addtocounter{subsection}{-1}%DIFAUXCMD
-\DIFdel{The Demo tractor is the complementary component to the Frontend UI.
-This is the virtual machine, a piece of software which simulates a real tractor , or
-agricultural vehicle . 
-}\DIFdelend \DIFaddbegin \DIFadd{The XMPP client/server components and interfacing with them is not a midterm deliverable, and is to be finished before final submission.
-}\subsection{\DIFadd{Task 3: Demo Tractor}}
+Remaining work for this task is to enable proper connectivity between the two
+assigned Virtual Machines. 
+}
+
+\DIFadd{RoboTractor on built on the Django. The development environment is best
+described in }\autocite{_django_2014}\DIFadd{. The Development environment consists of
+2 Fabric configurations one for development and a second for deployment. This
+  allows development settings to be more relaxed facilitating quick coding
+  cycles, while the deployed configuration is more secure. Separate database
+  also prevent test data from polluting the deployed demo project.
+}
+
+\DIFaddend \subsection{Task 2: XMPP Implementation}
+XMPP Implementation is a configuration task to setup the ejabberd server and
+connect it into the HTTP Framework. \DIFdelbegin \DIFdel{Once this is in place the XMPP Clients may start working.
+}\DIFdelend \DIFaddbegin \DIFadd{The XMPP client/server components and
+interfacing with them is not a midterm deliverable, and is to be finished before
+final submission.
+}
+
+\DIFaddend \subsection{Task 3: Demo Tractor}
+\DIFdelbegin \DIFdel{The Demo tractor is the complementary component to the Frontend UI. This is the virtual machine , a piece of software which simulates a real tractor, or
+agricultural vehicle. }\DIFdelend \DIFaddbegin 
 
 \begin{figure}
 \centering
@@ -223,9 +233,30 @@ agricultural vehicle .
 \caption{\DIFaddFL{Tractor Software State Machine}}
 \label{fig:tractorstatemachine}
 \end{figure}
-\DIFadd{The midterm deliverable for this task was to finalize the design specifications of the tractor simulator. This has been achieved after multiple team discussions, and a barebones
-state machine vehicle simulator has been written in python. As more tasks are completed, the simulator is to be updated with its required functionality such as XMPP communication, path processing, and status reporting.
-}\DIFaddend \subsection{Task 4: Frontend UI}
+\DIFadd{The midterm deliverable for this task was to finalize the design specifications
+of the tractor simulator. This has been achieved after multiple team
+discussions, and a barebones state machine vehicle simulator has been written in
+python. As more tasks are completed, the simulator is to be updated with its
+required functionality such as XMPP communication, path processing, and status
+reporting. The state machine consumes the Job File format described in
+Figure~\ref{fig:jobfile}.  
+}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{job_file.pdf}
+\caption{\DIFaddFL{Job File Format}}
+\label{fig:jobfile}
+\end{figure}
+
+\DIFadd{As described in Figure~\ref{fig:signalpath}, the job files are stored in the
+database. When the Tractor is instructed to run a job, the Tractor downloads the
+Job file from the server over its XMPP connection. The backend server is
+responsible for translating the database models into JSON encoded Job
+File.
+}
+
+\DIFaddend \subsection{Task 4: Frontend UI}
 \DIFaddbegin \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{../PlottingV1.png}
