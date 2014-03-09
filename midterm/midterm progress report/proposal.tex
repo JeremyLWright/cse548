@@ -3,6 +3,7 @@
 \usepackage{hyperref}
 \usepackage{tabularx}
 \usepackage{graphicx, subfigure, amsmath} 
+\usepackage{pdfpages}
 \usepackage[backend=biber,style=ieee]{biblatex}
 \usepackage[section]{placeins}
 \addbibresource{References/References.bib}
@@ -429,6 +430,7 @@ Service Uptime (web reliably)
 \end{tabular}
 \end{table}
 \end{landscape}
+\includepdf[pages=-,landscape=true]{schedule.pdf}
 \end{document}
 
 
