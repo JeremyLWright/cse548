@@ -1,7 +1,7 @@
 \documentclass[conference,12pt]{IEEEtran}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL ..\..\proposal\proposal.tex   Sat Mar  8 21:17:55 2014
-%DIF ADD proposal.tex                  Sun Mar  9 20:32:29 2014
+%DIF ADD proposal.tex                  Sun Mar  9 22:19:36 2014
 \usepackage{pdflscape}
 \usepackage{hyperref}
 \usepackage{tabularx}
@@ -326,23 +326,32 @@ the frontend user interface is to be highly secure. }\DIFaddend This task has
 \item Path generation
 \item Map rendering
 \DIFaddbegin \item \DIFadd{Two-Factor Authentication
+}\item \DIFadd{Vehicle location validation (final deliverable)
 }\DIFaddend \end{enumerate}
 \DIFaddbegin 
 
 \DIFaddend Path generation is the primary deliverable of this \DIFdelbegin \DIFdel{project}\DIFdelend \DIFaddbegin \DIFadd{task}\DIFaddend . The user shall be able
-to input a path for a given tractor to drive. \DIFdelbegin \DIFdel{The Tractor }\DIFdelend \DIFaddbegin \DIFadd{Waypoints  input by
-the user, and sent to the backend web-service via the REST interface. The
-webservice stores the waypoints in a Model format until instructed to convert it
-to the Job Format and send it to the Tractor.
+to input a path for a given tractor to drive. \DIFdelbegin \DIFdel{The Tractor }\DIFdelend \DIFaddbegin \DIFadd{Our map rendering system allows
+the user to select the waypoints just by clicking on the map for which the
+system returns the latitude and longitude location information to the user. The
+user then can select that location as a waypoint, on top of which the real-time
+markers will be placed to display location and waypoint information. Through
+this method the user can select a number of waypoints and generate the path for
+a tractor. The path generation algorithm generates the path just by drawing
+a straight line between the waypoints in the order of the waypoints selected by
+the user. The path generated is then overlayed on top of the rendered Google
+map. By this way the user can view the path on the real time map.  Waypoints
+input by the user, and sent to the backend web-service via the REST interface.
+The webservice stores the waypoints in a Model format until instructed to
+convert it to the Job Format and send it to the Tractor.
 }
 
-\DIFadd{The Tractor }\DIFaddend will then receive this
-path over the \DIFdelbegin \DIFdel{REST to XMPP gateway}\DIFdelend \DIFaddbegin \DIFadd{XMPP channel}\DIFaddend .  The UI \DIFdelbegin \DIFdel{may then periodically query the
-}\DIFdelend \DIFaddbegin \DIFadd{periodically queries REST endpoint for the
-current 
-}\DIFaddend position of the tractor and \DIFdelbegin \DIFdel{update }\DIFdelend \DIFaddbegin \DIFadd{updates }\DIFaddend it on the Google Map. \DIFaddbegin \DIFadd{Currently,
-a test-interface has been completed to meet the midterm deliverables, with
-additional functionality forthcoming.
+\DIFadd{The Tractor }\DIFaddend will then receive this path over the \DIFdelbegin \DIFdel{REST to XMPP gateway}\DIFdelend \DIFaddbegin \DIFadd{XMPP channel}\DIFaddend .  The UI
+\DIFdelbegin \DIFdel{may then periodically query the }\DIFdelend \DIFaddbegin \DIFadd{periodically queries REST endpoint for the current }\DIFaddend position of the tractor and
+\DIFdelbegin \DIFdel{update }\DIFdelend \DIFaddbegin \DIFadd{updates }\DIFaddend it on the Google Map. \DIFaddbegin \DIFadd{The UI will also include automated two-point
+vehicle location validation, where the location of the vehicle is checked
+against the boundary. Currently, a test-interface has been completed to meet the
+midterm deliverables, with additional functionality forthcoming.
 }
 
 \DIFaddend \subsection{Task 5: Server Backend}

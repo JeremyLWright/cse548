@@ -263,20 +263,30 @@ the frontend user interface is to be highly secure. This task has
 \item Path generation
 \item Map rendering
 \item Two-Factor Authentication
+\item Vehicle location validation (final deliverable)
 \end{enumerate}
 
 Path generation is the primary deliverable of this task. The user shall be able
-to input a path for a given tractor to drive. Waypoints  input by
-the user, and sent to the backend web-service via the REST interface. The
-webservice stores the waypoints in a Model format until instructed to convert it
-to the Job Format and send it to the Tractor.
+to input a path for a given tractor to drive. Our map rendering system allows
+the user to select the waypoints just by clicking on the map for which the
+system returns the latitude and longitude location information to the user. The
+user then can select that location as a waypoint, on top of which the real-time
+markers will be placed to display location and waypoint information. Through
+this method the user can select a number of waypoints and generate the path for
+a tractor. The path generation algorithm generates the path just by drawing
+a straight line between the waypoints in the order of the waypoints selected by
+the user. The path generated is then overlayed on top of the rendered Google
+map. By this way the user can view the path on the real time map.  Waypoints
+input by the user, and sent to the backend web-service via the REST interface.
+The webservice stores the waypoints in a Model format until instructed to
+convert it to the Job Format and send it to the Tractor.
 
-The Tractor will then receive this
-path over the XMPP channel.  The UI periodically queries REST endpoint for the
-current 
-position of the tractor and updates it on the Google Map. Currently,
-a test-interface has been completed to meet the midterm deliverables, with
-additional functionality forthcoming.
+The Tractor will then receive this path over the XMPP channel.  The UI
+periodically queries REST endpoint for the current position of the tractor and
+updates it on the Google Map. The UI will also include automated two-point
+vehicle location validation, where the location of the vehicle is checked
+against the boundary. Currently, a test-interface has been completed to meet the
+midterm deliverables, with additional functionality forthcoming.
 
 \subsection{Task 5: Server Backend}
 The Server Backend is the critical component which connects all components.
