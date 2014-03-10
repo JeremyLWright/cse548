@@ -32,7 +32,7 @@
 
 
 \begin{abstract}
-The need for the automation of vehicles is increasing due to
+The need for the automation of vehicles is increasing requiring
 improved efficiency, operation, and reduced operational costs. The scope of this
 project is to build a signaling and control system with
 a focus on security, in order to drastically reduce the systems from being compromised.
@@ -58,8 +58,8 @@ fertilizer, pesticides, and fuel, are increasing. The global population is
 increasing driving the need for more food. Local, State, and Federal governments
 are increasing oversight and reporting requirements on growers. Land area
 available for planting, and harvesting is decreasing globally. All this pushes
-farmers to lean on technology to improve their efficiency while reducing
-recurrent costs. Take government over sight requirements
+farmers to rely on technology to improve their efficiency while reducing
+recurrent costs. Take government oversight requirements
 \autocite{_growers_oversight}, growers are required to track where, and how much
 material is spread into the fields.  This can be a considerable overhead for
 growers, however an automated machine can do this quite easily, and in real-time
@@ -83,7 +83,7 @@ agricultural vehicles in a secure manner using advanced web, network, and crypto
 
 RoboTractor is a framework to provide integrity, authentication, and root of
 trust services for machine automation specifically within an agriculture domain.
-ECU manufacturers will particularly be interested in the root-of-trust details
+Electronic Control Unit (ECU) manufacturers will particularly be interested in the root-of-trust details
 described in Section~\ref{sec:xmpp}.  Agricultural service providers have
 typically be subject to locality issues. Historically, it's been difficult to
 provide agricultural services at a reasonable cost, at any appreciable distance
@@ -197,7 +197,7 @@ final submission.
 XMPP provides an SSL/TLS connection between the tractor, and the server. This
 allows a base level of secure communication.  However to augment the security
 model, we provide additional asymmetric encryption of the command structures
-in each XMPP stanza.  This also leveraging the growing a Trusted Platform
+in each XMPP stanza.  This also leverages a Trusted Platform
 Module (TMP). TMP is a hardware module, either part of the compute engine
 complex or as in ARM processors integrated into the CPU core itself.  ARM's
 offering is called TrustZone.  These security services provide a hardened
@@ -225,7 +225,7 @@ here to implement a ``root of trust'' to include the automation server.
 \end{figure}
 The midterm deliverable for this task was to finalize the design specifications
 of the tractor simulator. This has been achieved after multiple team
-discussions, and a barebones state machine vehicle simulator has been written in
+discussions, and a basic state machine vehicle simulator has been written in
 python. As more tasks are completed, the simulator is to be updated with its
 required functionality such as XMPP communication, path processing, and status
 reporting. The state machine consumes the Job File format described in
