@@ -26,6 +26,13 @@
 
 
 \begin{abstract}
+Transport Mode IPsec provides a strongly secured packet header called the
+Authentication Header (AH). This header provides integrity checking on all fields,
+and encapsulated data, but this packet cannot freely traverse a Network Address
+Translator (NAT).  One alternative is to reduce the fields covered by the
+integrity checker to allow NAT to mutate fields as necessary. This however has
+other issues. Instead this paper proposes using Generic Routing Encapsulation to
+encapsulate the stronger AH. 
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -33,38 +40,37 @@
 \end{IEEEkeywords}
 
 \section{Introduction}
-IPsec is an end-to-end security protocol for communicating over insecure
-channels. IPsec is defined in RFC 4301 \autocite{rfc4301}.  IPsec is a layer
-3 protocol according to the OSI Layer Model \autocite{_osi_2014}.  This
-  is a key advantage over security protocols at higher levels of abstractions
-  such as SSL/TLS.  SSL/TLS requires applications to be specifically designed to
-  interact with other SSL/TLS endpoints. IPsec doesn't require the application
-  to have any knowledge of security. For some application types, this is an
-  enormous advantage, both in terms of application correctness, and in network
-  infrastructure roll out. 
+IPsec is a layer 3 end-to-end security protocol for communicating over insecure
+channels \autocite{rfc4301}, \autocite{_osi_2014}.  Being a layer 3 protocol
+is a key advantage over security protocols at higher levels of abstractions
+such as SSL/TLS. Application level security solutions require applications to be
+designed with security in mind. IPsec doesn't require the application
+to have any knowledge of security. For some application types this is an
+enormous advantage, especially for established applications which cannot be
+extended to incorporate new security models. In this paper we will describe 
+how to establish an end-to-end secure connection between to hosts over an
+insecure channel (Figure~\ref{fig:network}).
 
 \section{IPsec}
-
 IPsec defines two modes of operation transport mode, and tunnel mode. Each mode
-has it's own header type. Transport mode uses the Authentication Header (AH), while
-Tunnel mode uses the Encapsulated Security Protocol Header. Each header provides varying
-levels of service, according to its intended function. Tunnel mode is typically
-used for connecting to networks together to form a larger virtual LAN
+has it's own header type. Transport mode uses the Authentication Header (AH). 
+Tunnel mode uses the Encapsulated Security Protocol Header (ESP). Transport mode
+connects two endpoints, whereas tunnel mode is typically
+used for connecting two networks together to form a larger virtual LAN
 \autocite{cisco_ipsec}. IPsec meets the 4 tenants of security:
-authentication, non-repudiation, integrity, and confidentiality. The integrity
-tenant is broken by NAT in the default case. Transport mode is used for connecting 2 end users
-together such as in a VPN situation. Transport mode however has additional
-issues when using NAT on IPv4 networks \autocite{rfc3022}.
+authentication, non-repudiation, integrity, and confidentiality. However,
+ when using NAT the integrity is broken by NAT mutating source and destination
+ fields \autocite{rfc3022}.
 
-\subsection{Transport Mode}
 Transport mode encrypts the entire IP packet, but keeps the routing information
-in plain text. The routing information however is incorporated into the hash
+in plain text. The routing information is incorporated into the hash
 value protecting it from tampering. Since the routing information cannot be
-changed this causes problems for NAT traversal in IPv4 networks.  On IPv6
-networks NAT is not necessary since all addresses are globally routable the
-routing information doesn't require change. In the presence of NAT however the
-NAT cannot change the source or destination fields, and preserve the integrity
-of the packet. Tunnel mode provides a method for dealing with this.
+changed this causes problems for NAT traversal in IPv4 networks.  IPv6
+networks NAT is not necessary since all addresses are globally routable.
+Within IPv4, NAT is required, but breaks end-to-end security since the
+NAT cannot simultaneously change the source or destination fields, and preserve the integrity
+of the packet. Tunnel mode provides a method for dealing with this, but does not
+fit all use cases. 
 
 \begin{figure}
 \centering
@@ -73,12 +79,11 @@ of the packet. Tunnel mode provides a method for dealing with this.
 \label{fig:ah}
 \end{figure}
 
-\subsection{Tunnel Mode}
 Tunnel Mode uses the ESP header (Figure~\ref{fig:esp}) to wrap the desired IP
 packet. The encapsulated IP package is encrypted, and the outer header defines
-mutable, and immutable fields available for NAT \autocite{rfc4301}.  In tunnel
-mode,  additional overhead since it doesn't use an additional IP
-Packet to wrap the security packet as IPsec Tunnel Mode requires. 
+mutable, and immutable fields available for NAT \autocite{rfc4301}. While this
+addresses the NAT issue, it ignores the fact that tunnel mode is primarily
+intended for network to network connections.   
 
 \begin{figure}
 \centering
@@ -88,36 +93,130 @@ Packet to wrap the security packet as IPsec Tunnel Mode requires.
 \end{figure}
 
 \section{NAT-T Traversal}
-RFC3947 provides a mechanism to use IPsec in the presence of a NAT gateway
-\autocite{rfc3947}.  
+RFC3947 provides a mechanism to use IPsec transport mode through a NAT gateway
+\autocite{rfc3947}. However as noted in section 4 of this document, this standard doesn't
+fully deal with the problem as it pushes requirements into the router software
+in order to function properly. ``The best approach is simply to move the IKE traffic off port 500 
+as soon as possible to avoid any IPsec-aware NAT special casing
+\autocite{rfc3947}''.  This seems like a prime area for race
+conditions, and contention issues as multiple services queue for port 500
+access.  An alternative approach at the cost of
+some additional overhead is to use Generic Routing Encapsulation (GRE).
 
-\section{Alternative with Generic Routing Protocol}
-Another option is to use the Generic Routing Protocol to route IPsec packets
-through the NAT \autocite{rfc2784}. This may be especially useful if the NAT in question isn't
-compliant and breaks the IPsec integrity packets.  Also for applications where
-the user must act as both a server and a client, such as video games where
-multi-player hosts connect to one another, or in peer-to-peer. in this case, the
-NAT will likely drop in coming connections, or the NAT may be handing
-a connection on port 500 at that instant, and the incoming connection would be
-ambiguous \autocite{rfc3715}
-. In this case connecting to the correct internal host would be
-unlikely. 
+\section{VPN with Generic Routing Encapsulation}
 
-Generic Routing Protocol (GRP), is a layer 3 protocol which encapsulates any
-other protocol.  Since this protocol is unsecured, the NAT is free to mutate
-fields and operate as normal.  However the receiver can accept the GRP packets
-peel off the encapsulated inner packets, and continue routing within the
-network \autocite{rfc3193}
-. 
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{network.png}
+\caption{Example Network with two NAT gateways}
+\label{fig:network}
+\end{figure}
+GRE is an encapsulation protocol defined in RFC2784. GRE can route any OSI Layer
+3 packet such as IPsec \autocite{rfc2784}. GRE creates a point to point
+connection between two nodes.  To establish our GRE tunnel, we first must
+establish where the encapsulation packing and unpacking occurs. For the
+network defined in Figure~\ref{fig:network}, we have 3 options. 
+\begin{enumerate}
+\item Encapsulate packets in the switch.
+\item Encapsulate packets in the user's operating system.
+\item \label{item:sw} Encapsulate packets in a userspace software application running on the endpoint.
+\end{enumerate}
+For this use case we will assume the client is in a coffee shop or some similar
+public network, hence the client cannot modify routing information in the switch.
+Finally, the client wants to connect back to a desktop in a home office. For
+this use case 
+item~\ref{item:sw}, is most fitting. The user can start the vpn software, enter
+credentials and the software will establish the tunnel to the remote endpoint.
+
+Since GRE will establish the tunnel we can use IPsec's transport mode. This
+provides a clean division of responsibilities.  IPsec establishes security. GRE
+establishes the tunnel.  IPsec protects all higher level protocols
+(layers 4,5,6) without modification. Using GRE, our software
+application encapsulates VPN bound packets like
+Figure~\ref{fig:packet_structure}.  The outer IPv4 packet is free to be manipulated
+by any NAT within the pipeline. Whereas RFC 3947 requires a NAT discovery phase,
+this encapsulated packet behaves as an ordinary IPv4 datagram. When the remote
+host receives the outer IPv4 packet, it peels off the IPv4 and GRE headers 
+to reveal a fully authenticated AH IPsec header. The
+application software then resumes routing the IPsec packet to its destination.
+This defines our end-to-end secure channel.
+
+\subsection{Routing our encapsulated header}
+To route our header we will assume each router in Figure~\ref{fig:network}
+provides NAT services.  The sender builds a datagram destined for the remote
+host, say an
+instant message professing the user's affinity for kittens
+(Figure~\ref{fig:udp}). The application layer assembles the message as a UDP
+packet and sends the datagram over its socket. Our VPN software receives the packets
+since it's destined for the VPN secure connection.  
+
+The VPN software assembles an AH header and encrypts the UDP packet (Figure~\ref{fig:ipsec}).  The IPsec
+packet is routable at this point, but will not traverse a NAT.  To circumvent
+the address translation, the VPN software builds a GRE packet to encapsulate the
+AH header (Figure~\ref{fig:gre}).  The GRE packet is then encapsulated into the
+IPv4 packet to route to the final network. This IPv4 header becomes the
+``outer'' IP packet, and the NAT is free to mutate it as required to get it to the
+destination. Per RFC 6864 the identification field is not used
+\autocite{rfc6864}. DSCP, and ECN
+similarly are not used. The local router receives the packet and modifies the source address
+ in the outer IPv4 header. Since the outer IPv4 packet is not included in the
+ encapsulated AH header's hash, integrity is not disrupted. This is what prevented us from using the AH
+header natively. 
+
+On the receiving end, the remote NAT accepts the outer IPv4 packet and
+translates the destination IP to an internal IP address via its internal
+tables.  The remote host receives the datagram, and peels off the IPv4 and
+GRE headers. It uses the GRE key as internal information.  The AH header is
+verified for integrity (which verifies the fields and data).  This integrity
+check is a key benefit of AH, over ESP. Lastly, the data gram is
+decrypted, and the resulting UDP packet is routed up to the application layer.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{packet.png}
+\caption{GRE encapsulated IPsec packet}
+\label{fig:packet_structure}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{udp_1.png}
+\caption{UDP Packet the user wishes to send via VPN}
+\label{fig:udp}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{ipsec_2.png}
+\caption{AH encapsulated UDP Packet (Encrypted)}
+\label{fig:ipsec}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{gre_3.png}
+\caption{AH encapsulated in GRE Packet}
+\label{fig:gre}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{ip4_4.png}
+\caption{IPv4 Sending the GRE Packet}
+\label{fig:outer_ip}
+\end{figure}
+
+
 
 \section{Conclusion}
 Traditionally, when configuring IPsec, one would use Tunnel Mode to connect to
 large networks together creating a larger virtual LAN. For remote users
-connecting to a publicly accessible server, transport mode maybe more useful.
+connecting to a publicly accessible server, transport mode may be more useful.
 However to create a secure connection between two end users in a peer-to-peer
 fashion, one can look at defining
 a new protocol based on the GRP, to route their custom secure clients through
-Network Address Translators.
+Network Address Translators. Since this approach operates at Layer 3, it has the
+added benefit of providing secure communications to applications without
+existing security. Their traffic is successfully encapsulated into the AH, and
+GRE headers to arrive at their destination, securely.
 
 
 \printbibliography
