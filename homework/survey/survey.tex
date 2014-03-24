@@ -1,0 +1,145 @@
+\documentclass[conference,12pt]{IEEEtran}
+\usepackage{pdflscape}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{graphicx, subfigure, amsmath} 
+\usepackage{pdfpages}
+\usepackage[backend=biber,style=ieee]{biblatex}
+%\usepackage[section]{placeins}
+\addbibresource{References.bib}
+\interdisplaylinepenalty=2500
+
+% correct bad hyphenation here
+\hyphenation{}
+
+
+\begin{document}
+%
+% paper title
+\title{Better Than Best Effort}
+
+\author{
+\IEEEauthorblockN{Jeremy Wright}
+\IEEEauthorblockA{Arizona State University\\jlwrigh1@asu.edu}
+}
+\maketitle
+\begin{abstract}
+Vehicle's are quickly becoming distributed comupting platforms on wheels, and
+teh integration of these system is essentail for both the safety and comfort of
+the passengers. Over the last few decades there has been increasing integrtion
+of these systems to perform highly advanced functions, but never losing thier
+core safety and realibility guiarntees. This survey will look at the 4 most
+popular industial networks in vehciles, how they differ from the enthernet based
+protocols we are used to in the internet domain, and how the physical layers and
+software layers interact to make a truely safe system. 
+\end{abstract}
+
+\begin{IEEEkeywords}
+CAN, LIN, MOST, FlexRay, safety, reliability
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+Something flashes across the road. Instinctively you slam on the brakes. ABS
+kicks in to preserve tire contact with the road. Your body begins to fly
+forward, your head towards the steering wheel. Inertial sensors deploy a series
+of events collision management events. The fuel pump is shut down to reduce the
+risk of fire. Body dynamic sensors adjust suspension forces to keep the vehicle
+level, and in a safe driving position. The vehicle signals emergency responders
+of a crash event with the current GPS location. You are caught by the air bag.
+The crash is over. You are safe. 
+
+This is the environment of industrial networks.
+The hard real-time communication channels where failure means people die.
+Advanced made in this area have increased vehicle safety, reduced vehicle
+weight, and improved overall comfort of the system. Many of us are familiar with
+internet application network, such as TCP, UDP and Ethernet.  These routing
+protocols were originally developed to reduce the ability of an attacking nation
+to take down the United States' communication infrastructure. Ethernet is fault
+tolerant and employs a concept called best effort routing, where packets are
+routed to a destination in the most likely path for success.  Packets have
+a time to live, and if they don’t reach the destination in time, drop off the
+network. Consider since a “best effort” approach in a vehicle. If the music
+player is shipping data over the vehicle network, and the air bag deploy message
+cannot get any bandwidth… catastrophe. Instead of best effort, industrial
+protocols take a different approach focused on safety, reliability, and
+guaranteed delivery. This focus usually is a tradeoff for performance.  You may
+not be able to ship a great deal of data, but what data can be sent is sent
+reliability since, when the air bag needs to deploy, being late is useless.
+
+This survey will discuss the industrial physical layers commonly used in
+vehicles today: CAN, LIN and MOST, and the software protocols that run over
+them, ISO, FlexRay, and MOST. Vehicle network design takes an approach similar
+to a VoIP network than how one would design a network primarily for email, and
+internet.  In these types of networks latency and jitter are key functions that
+translate to real physical requirements. This is typically dealt with in
+2 methods Time-Triggered messaged, and Priority Messages. Time Triggered
+messages are used when the physical later doesn’t support priority based voting,
+where as   in the case of CAN, the physical open-collector function implements
+a primitive, yet very effective voting scheme for sending data. This survey will
+discuss how messages are segregated into time trigger, or priority networks.
+The 4 types of networks running in the vehicle: comfort, chassis, engine, and
+describe how these functions work together to provide an immersive infotainment
+experience, while keeping our vehicles safer than ever.  
+
+Vehicle functions are
+segregated into discrete Electronic Control Units (ECUs) distributed around the
+vehicle. These ECUs provide raw sensor data, engine statistics, trouble code
+information, and even dynamic suspension information, all in real-time. Before
+the advent of CAN in 1986, Industrial protocols allow networked ECUs to
+communicate in our vehicles, and airplanes. Protocols such as CAN, LIN, or AFDX,
+and their associated physical layers CAN, UART, Ethernet allow for reliable,
+scalable, and safe operation of electronic systems within our vehicles.  But
+what is it that separates an industrial protocol from a non-industrial one.
+Namely, reliability, and safety.  Industrial protocols can be evaluated in how
+they meet criteria related to confirmed delivery.  Industrial protocols
+typically reduce the bandwidth and speed of the network to add extra
+reliability. For instance, CAN uses an open collector signaling scheme which
+increases the power required to drive the network than the magnetic isolation
+technique of Ethernet, but this simple fact implements an OR operation. This OR
+operation is used by senders to verify that each bit they send was received by
+the rest of the network.  
+
+CAN was the first industrial protocol introduced by
+Bosch in 19XX. Software assisted vehicle functions were connected by point to
+point wiring.  Once CAN allowed multiple ECUs to be reliably connected on
+a common pair of wires, vehicle manufactures saw improved reliability and
+reduced vehicle weight.  *17 pounds*.  Industrial portals also allow ECUs to
+work cooperatively merging sensor data from multiple end points to achieve
+advanced vehicle functions. Today, the X-by-wire systems are the epitome of this
+capable of detecting road obstructions and even stopping the vehicle if
+necessary.  
+
+So how is reliability defined? Reliability is an ECU knowing that
+a message sent was received by its intended receiver. Real-time. Vehicle busses
+must allow message to arrive in a deterministic amount of time. Since message
+could contain life critical message such as “deploy air bags” such highest
+priority message must get through. This is also related to safety, at the
+protocol level, message must get though, at the signal level vehicles are
+electrically very noisy. Noise can induce eddy currently or other anomalous bits
+in the digital networks. The physical layer must protect against these to
+achieve safe operation.  This survey will look at 4 ground based vehicle
+industrial protocols, MOST, FlexRay, LIN, and CAN examine the network and
+physical layers to how they achieve safety, reliability, data integrity and some
+of the security implications of each.  Vehicle functions are segregated into
+4 function groups 
+
+\section{CAN} 
+Can was the first industrial protocol for vehicles, and CAN is used for nearly
+all systems of a vehicle, except for the comfort system which require higher
+bandwidth than CAN provides. The novel concept introduced by CAN was the bit
+priority voting system built into the FlexRay Flexray did some stuff that some
+people care about, do I care, probably not, but whatev.
+
+\section{LIN}
+Lin bus is a serial bus designed for ultra-low cost low data rate systems.
+
+\section{MOST}
+Media oriented service transport was introduced to provided higher data rates
+for the comfort systems of a vehicle. MOST is unique in that it’ optical fiber.
+Optical fiber provides physical safety by its very nature. Since the signals are
+light, they aren't susceptible to magnetic fields as copper wires. This
+alleviates a higher function handled by more complex systems on the previous
+networks. 
+
+\end{document}
