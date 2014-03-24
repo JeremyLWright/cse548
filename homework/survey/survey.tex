@@ -52,26 +52,33 @@ level, and in a safe driving position. The vehicle signals emergency responders
 of a crash event with the current GPS location. You are caught by the air bag.
 The crash is over. You are safe. 
 
-This is the environment of industrial networks.
+This is the environment of automotive networks.
 The hard real-time communication channels where failure means people die.
-Advanced made in this area have increased vehicle safety, reduced vehicle
-weight, and improved overall comfort of the system. Many of us are familiar with
-internet application network, such as TCP, UDP and Ethernet.  These routing
-protocols were originally developed to reduce the ability of an attacking nation
-to take down the United States' communication infrastructure. Ethernet is fault
+Advances made in this area have increased vehicle safety, reduced vehicle
+weight, and improved overall comfort of the system \autocite{navet_trends_2005}. Many of us are familiar with
+Internet application network Ethernet, and its approach to security. Network
+security is defined by 4 principles: Confidentiality, Integrity, Availability,
+and non-repudiation.   Ethernet attempts to meet a centroid by spreading
+responsibilities across the various layers of the protocol. Automotive networks
+however choose to optimize just two of these aspects, Availability, and Integrity.
+Messages must be able to be send when ready, and message must arrive intact.
+
+Internet protocol is fault
 tolerant and employs a concept called best effort routing, where packets are
 routed to a destination in the most likely path for success.  Packets have
-a time to live, and if they don’t reach the destination in time, drop off the
-network. Consider since a ``best effort'' approach in a vehicle. If the music
+a time to live, and if they don't reach the destination in time, drop off the
+network \autocite{_best-effort_2014}. Consider since a ``best effort'' approach in a vehicle. 
+If the music
 player is shipping data over the vehicle network, and the air bag deploy message
-cannot get any bandwidth… catastrophe. Instead of best effort, industrial
+cannot get any bandwidth catastrophe. Instead of best effort, industrial
 protocols take a different approach focused on safety, reliability, and
 guaranteed delivery. This focus usually is a trade-off for performance.  You may
 not be able to ship a great deal of data, but what data can be sent is sent
 reliability since, when the air bag needs to deploy, being late is useless.
 
 This survey will discuss the industrial physical layers commonly used in
-vehicles today: CAN, LIN and MOST, and the software protocols that run over
+vehicles today: CAN \autocite{std_can}, LIN \autocite{std_lin} and FlexRay
+\autcite{std_flexray}, and the software protocols that run over
 them, ISO, FlexRay, and MOST. Vehicle network design takes an approach similar
 to a VoIP network than how one would design a network primarily for email, and
 internet.  In these types of networks latency and jitter are key functions that
@@ -131,10 +138,10 @@ operation is used by senders to verify that each bit they send was received by
 the rest of the network.  
 
 CAN was the first industrial protocol introduced by
-Bosch in 19XX. Software assisted vehicle functions were connected by point to
+Bosch in 1983 \autocite{std_can}. Software assisted vehicle functions were connected by point to
 point wiring.  Once CAN allowed multiple ECUs to be reliably connected on
 a common pair of wires, vehicle manufactures saw improved reliability and
-reduced vehicle weight.  *17 pounds*.  Industrial portals also allow ECUs to
+reduced vehicle weight \autocite{navet_trends_2005}.  Industrial portals also allow ECUs to
 work cooperatively merging sensor data from multiple end points to achieve
 advanced vehicle functions. Today, the X-by-wire systems are the epitome of this
 capable of detecting road obstructions and even stopping the vehicle if
@@ -275,6 +282,7 @@ limited perforamnce. This however can make the latency more difficult to reason
 about. If the message schema does not support priority, then its possible for
 lower priorty messages to flood the bus, and prevent higher piroity messages
 from reaching the destination before the deadline. 
+
 \section{Conclusion}
 Vehicle electronic are trending toward higher connectivity, higher security, and
 greater integration within the vehcile as well as new out of vehicle systems.
