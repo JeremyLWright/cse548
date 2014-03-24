@@ -1,5 +1,6 @@
 \documentclass[conference,12pt]{IEEEtran}
 \usepackage{pdflscape}
+\usepackage{todonotes}
 \usepackage{hyperref}
 \usepackage{tabularx}
 \usepackage{graphicx, subfigure, amsmath} 
@@ -59,11 +60,11 @@ to take down the United States' communication infrastructure. Ethernet is fault
 tolerant and employs a concept called best effort routing, where packets are
 routed to a destination in the most likely path for success.  Packets have
 a time to live, and if they don’t reach the destination in time, drop off the
-network. Consider since a “best effort” approach in a vehicle. If the music
+network. Consider since a ``best effort'' approach in a vehicle. If the music
 player is shipping data over the vehicle network, and the air bag deploy message
 cannot get any bandwidth… catastrophe. Instead of best effort, industrial
 protocols take a different approach focused on safety, reliability, and
-guaranteed delivery. This focus usually is a tradeoff for performance.  You may
+guaranteed delivery. This focus usually is a trade-off for performance.  You may
 not be able to ship a great deal of data, but what data can be sent is sent
 reliability since, when the air bag needs to deploy, being late is useless.
 
@@ -74,7 +75,7 @@ to a VoIP network than how one would design a network primarily for email, and
 internet.  In these types of networks latency and jitter are key functions that
 translate to real physical requirements. This is typically dealt with in
 2 methods Time-Triggered messaged, and Priority Messages. Time Triggered
-messages are used when the physical later doesn’t support priority based voting,
+messages are used when the physical later does not support priority based voting,
 where as   in the case of CAN, the physical open-collector function implements
 a primitive, yet very effective voting scheme for sending data. This survey will
 discuss how messages are segregated into time trigger, or priority networks.
@@ -86,7 +87,36 @@ Vehicle functions are
 segregated into discrete Electronic Control Units (ECUs) distributed around the
 vehicle. These ECUs provide raw sensor data, engine statistics, trouble code
 information, and even dynamic suspension information, all in real-time. Before
-the advent of CAN in 1986, Industrial protocols allow networked ECUs to
+the advent of CAN in 1986, these systems were completely segregated, and often
+implemented by different vendors e.g. the door lock system would be physically
+separated from the truck latch.  Segregated there was no issue of contention
+since the system fully owned the communication channels it needed. hwever this
+also resulted in a great deal of redundency, cost, and weight \todo{cite bmw
+weight}.  Furthermore, many functions can have enhancled accuracy or precision
+by combining several different data sources in a scheme called sensor fusion.
+CAN was intrduced to address these issues.  CAN allowed ECUs to be linked
+together with a single twisted pair of copper wires, and included a novel
+prioirty scheme for routing higher prioirty messages ahead of lower porioty
+ones. This was the advent of the industrial protocol in automotive vehciles.
+
+one level of abstraction above the ECU are the system categories: powertrain,
+comfort, and chassis.  powertrain systems involve engine and transmission
+data, and have the very tight timing, and jitter specification since these
+systems are responsible for function such as variable valve timing, spark
+advance/delay and other critical engine functions. comfort is the other end of
+the spectrum, and provides the environment controls such as AC, heating, and
+radio.  Increasingly these comfort systems have grown to include cellular phone
+integration, and even hotspot functionality. This network categroy requires
+higher bandwidth, and higher speed but with a lower enphasis on safety, and
+reliability. Late message may disrupt the music, but it will not likely result
+in harm.  Chassis systems are responsible for maintaining control of suspension,
+steering and braking. These are a high reliability network type.
+\autocite{navet_trends_2005}.
+
+
+
+
+Industrial protocols allow networked ECUs to
 communicate in our vehicles, and airplanes. Protocols such as CAN, LIN, or AFDX,
 and their associated physical layers CAN, UART, Ethernet allow for reliable,
 scalable, and safe operation of electronic systems within our vehicles.  But
@@ -110,7 +140,19 @@ advanced vehicle functions. Today, the X-by-wire systems are the epitome of this
 capable of detecting road obstructions and even stopping the vehicle if
 necessary.  
 
-So how is reliability defined? Reliability is an ECU knowing that
+So how is reliability defined? Withing vehciles, reliability maps to the
+security concept of availability. The message bus must be available when a high
+prioiy message is to be sent, and the latency must be abslutely bounded.
+Furthermore vehicles are electrically very harsh environments. Temperatures can
+be extreme, sensors, and system are exposed to weather. Because of this the
+physical layers must continue to function in the presense of high electric
+fields or magnetice fields or other anomouly.  Ethernet for example doesn't meet
+this requirement. Within HVAC, one must be carefy to lay ethernet lines around
+flourcent tube lighting. The magnetic fields genertaed by the neon gasses
+arching can disrupt the ethernet cables high higher speeds. In a vehcile this
+variably of network quality is unacceptable. 
+
+Reliability is an ECU knowing that
 a message sent was received by its intended receiver. Real-time. Vehicle busses
 must allow message to arrive in a deterministic amount of time. Since message
 could contain life critical message such as “deploy air bags” such highest
@@ -131,15 +173,38 @@ bandwidth than CAN provides. The novel concept introduced by CAN was the bit
 priority voting system built into the FlexRay Flexray did some stuff that some
 people care about, do I care, probably not, but whatev.
 
+\todo{Show network packet structure}
+\todo{Show how the voting/priority works}
+\todo{describe now the internal hardware provides and additional level of
+priority}
+
 \section{LIN}
+\todo{PAcket structure}
+\todo{network topography}
+\todo{How it acheives guarnateed latency}
 Lin bus is a serial bus designed for ultra-low cost low data rate systems.
 
 \section{MOST}
+\todo{Show the packet structure}
+\todo{Show the priority scheme}
+\todo{Describe the benefits of fiber over copper}
 Media oriented service transport was introduced to provided higher data rates
 for the comfort systems of a vehicle. MOST is unique in that it’ optical fiber.
 Optical fiber provides physical safety by its very nature. Since the signals are
 light, they aren't susceptible to magnetic fields as copper wires. This
 alleviates a higher function handled by more complex systems on the previous
-networks. 
+networks.
+
+\section{Conclusion}
+Vehicle electronic are trending toward higher connectivity, higher security, and
+greater integration within the vehcile as well as new out of vehicle systems.
+These trends are already pushing the performance limits of its backbone protcol
+CAN, and while MOST provides a higher bandwidth link, it cannot complete with
+the safety offered by CAN. It is an exciting time to see what advanced will be
+made in the realm of vehcile protocols to meet this growing bandwith bottleneck,
+but maintain the critical safety specifications which keeps us blissfully unaware
+of the mountain of software that make our cars function. 
+
+\printbibliography
 
 \end{document}
