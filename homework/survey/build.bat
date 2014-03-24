@@ -1,5 +1,6 @@
-pdflatex survey.tex
+inkscape -z -Acan_frame.pdf can_frame.svg
+pdflatex -interaction=batchmode survey.tex
 biber survey
-pdflatex survey.tex
-pdflatex survey.tex
-pdflatex survey.tex
+pdflatex -interaction=batchmode survey.tex
+pdflatex -interaction=batchmode survey.tex
+pdflatex -interaction=batchmode survey.tex

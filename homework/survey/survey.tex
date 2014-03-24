@@ -1,5 +1,7 @@
 \documentclass[conference,12pt]{IEEEtran}
 \usepackage{pdflscape}
+\usepackage{longtable}
+\usepackage[bitheight=6ex]{bytefield}
 \usepackage{todonotes}
 \usepackage{hyperref}
 \usepackage{tabularx}
@@ -152,6 +154,8 @@ flourcent tube lighting. The magnetic fields genertaed by the neon gasses
 arching can disrupt the ethernet cables high higher speeds. In a vehcile this
 variably of network quality is unacceptable. 
 
+
+\section{Reliable Networks}
 Reliability is an ECU knowing that
 a message sent was received by its intended receiver. Real-time. Vehicle busses
 must allow message to arrive in a deterministic amount of time. Since message
@@ -161,12 +165,20 @@ protocol level, message must get though, at the signal level vehicles are
 electrically very noisy. Noise can induce eddy currently or other anomalous bits
 in the digital networks. The physical layer must protect against these to
 achieve safe operation.  This survey will look at 4 ground based vehicle
-industrial protocols, MOST, FlexRay, LIN, and CAN examine the network and
+industrial protocols, CAN, LIN, and FlexRay examine the network and
 physical layers to how they achieve safety, reliability, data integrity and some
-of the security implications of each.  Vehicle functions are segregated into
-4 function groups 
+of the security implications of each. Lastly we will look at time triggered,
+verses event triggered message schemes an how each system fits into the overal
+safety case.
 
-\section{CAN} 
+\subsection{CAN} 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{can_frame.pdf}
+  \caption{CAN Frame without bit stuffing}
+  \label{fig:can_frame}
+\end{figure}
 Can was the first industrial protocol for vehicles, and CAN is used for nearly
 all systems of a vehicle, except for the comfort system which require higher
 bandwidth than CAN provides. The novel concept introduced by CAN was the bit
@@ -178,23 +190,29 @@ people care about, do I care, probably not, but whatev.
 \todo{describe now the internal hardware provides and additional level of
 priority}
 
-\section{LIN}
+\subsection{LIN}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{LIN_frame.png}
+  \caption{FlexRay frame}
+  \label{fig:flexray_frame}
+\end{figure}
 \todo{PAcket structure}
 \todo{network topography}
 \todo{How it acheives guarnateed latency}
 Lin bus is a serial bus designed for ultra-low cost low data rate systems.
 
-\section{MOST}
-\todo{Show the packet structure}
-\todo{Show the priority scheme}
-\todo{Describe the benefits of fiber over copper}
-Media oriented service transport was introduced to provided higher data rates
-for the comfort systems of a vehicle. MOST is unique in that it’ optical fiber.
-Optical fiber provides physical safety by its very nature. Since the signals are
-light, they aren't susceptible to magnetic fields as copper wires. This
-alleviates a higher function handled by more complex systems on the previous
-networks.
+\subsection{Flexray}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{Flexray.PNG}
+  \caption{FlexRay frame}
+  \label{fig:flexray_frame}
+\end{figure}
 
+\section{Messaging Schemes}
+\subsection{Time Triggered Messages}
+\subsection{Event Triggered Messages}
 \section{Conclusion}
 Vehicle electronic are trending toward higher connectivity, higher security, and
 greater integration within the vehcile as well as new out of vehicle systems.
