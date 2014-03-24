@@ -19,7 +19,7 @@
 \begin{document}
 %
 % paper title
-\title{Better Than Best Effort}
+\title{Automotive Communications \\ \large{Better Than Best Effort}}
 
 \author{
 \IEEEauthorblockN{Jeremy Wright}
@@ -116,8 +116,6 @@ steering and braking. These are a high reliability network type.
 \autocite{navet_trends_2005}.
 
 
-
-
 Industrial protocols allow networked ECUs to
 communicate in our vehicles, and airplanes. Protocols such as CAN, LIN, or AFDX,
 and their associated physical layers CAN, UART, Ethernet allow for reliable,
@@ -169,9 +167,31 @@ industrial protocols, CAN, LIN, and FlexRay examine the network and
 physical layers to how they achieve safety, reliability, data integrity and some
 of the security implications of each. Lastly we will look at time triggered,
 verses event triggered message schemes an how each system fits into the overal
-safety case.
+safety case. 
+
+Besides relability networks provide different levels of performance separated by
+their class.
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.3}
+\caption{Network Classes by speed}
+\label{tbl:network_classes}
+\centering
+\begin{tabular}{c c c}
+\hline
+\bfseries Network Class & \bfseries Speed & \bfseries Typical Use \\ \hline
+\hline
+A & $< 10$ Kbps  & Body domain \\
+B & $< 125$ Kbps & Sensor Sharing \\
+C & $< 1$ Mbps   & Powertrain and Chassis Domain \\
+D & $> 1$ Mbps    & Media and infotainment \\
+\hline
+\end{tabular}
+\end{table}
 
 \subsection{CAN} 
+CAN is a Class C, half-duplex, self-initated network type. CAN provides prioity based messaging by
+implementing an OR function into the physical layer itself. 
+
 
 \begin{figure}
   \centering
@@ -191,18 +211,21 @@ people care about, do I care, probably not, but whatev.
 priority}
 
 \subsection{LIN}
+LIN is a class A, half duplex, master initiated network type. It provides a low cost network capable of
+interfacing up to 16 separate slave units. LIN is a half-
 \begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{LIN_frame.png}
-  \caption{FlexRay frame}
-  \label{fig:flexray_frame}
+  \caption{LIN frame}
+  \label{fig:lin_frame}
 \end{figure}
-\todo{PAcket structure}
 \todo{network topography}
 \todo{How it acheives guarnateed latency}
 Lin bus is a serial bus designed for ultra-low cost low data rate systems.
 
 \subsection{Flexray}
+FlexRay is a Class D, full duplex self initiated, network type. It provides very high performance up to 10
+Mbps while retaining a strong transmission error correctino scheme.  
 \begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{Flexray.PNG}
@@ -211,8 +234,47 @@ Lin bus is a serial bus designed for ultra-low cost low data rate systems.
 \end{figure}
 
 \section{Messaging Schemes}
+Each of the network types we've looked at are single media, multiple access
+networks.  All ECUs, share a single set of wires to communicate to each other.
+Ethernet is also such a configuration. However Ethernet's start of transmission
+scheme is in start contract to industrial protocls presented here. Ethernet has
+a randomized backoff scheme which manaifest a variable network latency scheme.
+If a device is a very loud talker, it can push out all other communication
+creating a classic denial of service. In a vehcile bus, denial of service, i.e.
+the steering wheel cannot contact the power steering unit as in a steer-by-wire
+system. Such an event renders the vehcile an uncontrollable missle. But where Ethernet has variable latency
+due to its randomized start of transmission scheme, industrial protocols have
+two major schemes time triggered, and event triggered messaging for dealing with denial of service, and define a fixed
+latency. 
 \subsection{Time Triggered Messages}
+Time triggered message schemes send data at a rated defined by a network
+``master schedule''. This is essentially time division multiplexing the
+communication channel. The upseide to time triggered messaging is the simplicy
+of analysis. When all messages are defined for bounded windows of transmission,
+it is excplicitly known what all message latencies are.  The downside is
+composability. Vehicle manufactures tend to build vehicle systems over time,
+making small improvements and composing new functions reusing smaller functions
+which already exist. Since the ``master schedule'', is truly a single document
+describing all traffic, adding a new ECU to the network requires the entire
+schedule to be redesigned and evaluated. 
+
+Time triggered messaging is primarily used in fail-safe systems such as steering
+and braking. BMW's steer-by-wire systems use FlexRay for very high speed
+communication, between the steering wheel, and the steering actuators. The
+steering wheel sends it's current angle, and velocity periodically to the
+actuator. If the actuator doesn't recieve a message from the steering wheel on
+the scheduled time, it can perform some error mechanism to protect the vehcile
+from a potentially failed steering wheel.  Braking is a similar design allowing
+the vehicle to fail safely if communication channels are faulty. 
+
 \subsection{Event Triggered Messages}
+Event triggered schemes preserve bandwidth over time triggered schemes since
+ECUs are not sending repeat messages at defined rates. This allows lower speed
+busses such as Low speed CAN (125Kbps) to more efficiently use the
+limited perforamnce. This however can make the latency more difficult to reason
+about. If the message schema does not support priority, then its possible for
+lower priorty messages to flood the bus, and prevent higher piroity messages
+from reaching the destination before the deadline. 
 \section{Conclusion}
 Vehicle electronic are trending toward higher connectivity, higher security, and
 greater integration within the vehcile as well as new out of vehicle systems.
