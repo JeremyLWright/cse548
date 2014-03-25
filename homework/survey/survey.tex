@@ -410,7 +410,7 @@ method to deal with this is to design schedules with slack, or quiet periods.
 Leaving room for future ECUs to fill the quiet time. This however isn't
 scalable, requires a rgeat deal of time, and depending on what function comes in
 the future may not even result in enough quiet time. Besides providing
-guarenteed access even in high bus load situations Time triggered functions
+guaranteed access even in high bus load situations Time triggered functions
 provide another mechanism, fail safe. 
 
 Time triggered messaging is primarily used in fail-safe systems such as steering
@@ -429,7 +429,7 @@ ECUs are not sending repeat messages. NMEA 0183 however combines these two
 mechanisms. For reporting GPS position, NMEA 0183 defines two messages, a low speed
 reference message called a COG sent at 1 Hz and high speed delta message called a SOG
 \autocite{_nmea}. The
-low speed message uses several CAN frames to publish a high accuracy gnss
+low speed message uses several CAN frames to publish a high accuracy GNSS
 position. The high speed message is sent at 10 Hz, and uses a single can frame.
 This allows a time triggered scheme, but spreads the high precision updates over
 time to preserve band width on the limited CAN bus.  By combining time trigger
@@ -442,9 +442,7 @@ initiates a transfer, then its possible for
 lower priority messages to flood the bus, and prevent higher priority messages
 from reaching the destination before the deadline. 
 
-\section{System Architecture}
-Now with various message schemes, over various transport, how are these pulled
-together to a consistent system architecture.
+\subsection{Mixed architectures}
 Figure~\ref{fig:heterogenous_network} shows a typical breakdown of networks
 according to the various functions within a vehicle. Initially, requirements are
 broken down into the primary categories of vehicle networks.  Infotainment
@@ -466,12 +464,18 @@ and electronic shifting.
 
 Engines have grown exponentially in the amount of data they require to operate
 properly. 
+Vehicle electronic are trending toward higher connectivity, higher security, and
+greater integration within the vehicle as well as new out of vehicle systems.
+These trends are already pushing the performance limits of its backbone protocol
+CAN, and while MOST provides a higher bandwidth link, it cannot complete with
+the safety offered by FlexRay.
+
 \section{Conclusion}
 Each of the network types we've looked at are single media, multiple access
 networks.  All ECUs, share a single set of wires to communicate to each other.
 Ethernet is also such a configuration. However Ethernet's start of transmission
 scheme is in start contract to industrial protocols presented here. Ethernet has
-a randomized backoff scheme which manifest a variable network latency scheme.
+a randomized back-off scheme which manifest a variable network latency scheme.
 If a device is a very loud talker, it can push out all other communication
 creating a classic denial of service. In a vehicle bus, denial of service, i.e.
 the steering wheel cannot contact the power steering unit as in a steer-by-wire
@@ -480,15 +484,41 @@ due to its randomized start of transmission scheme, industrial protocols have
 two major schemes time triggered, and event triggered messaging for dealing with denial of service, and define a fixed
 latency. 
 
-Vehicle electronic are trending toward higher connectivity, higher security, and
-greater integration within the vehicle as well as new out of vehicle systems.
-These trends are already pushing the performance limits of its backbone protocol
-CAN, and while MOST provides a higher bandwidth link, it cannot complete with
-the safety offered by FlexRay.
+Vehicles are increasingly more connected. More ECUs provide more advanced
+functions, and high speed buses like FlexRay are linking them together
+reliability, but the future of Vehicular ad hoc network (VANET) are on the
+horizon. Automotive protocols have typically left authentication, and
+confide tonality out of the security profile of their networks. OEMS have
+enjoyed a relatively closed network, not susceptible to external hackers
+\autocite{zhou_research_2012}. VANETs bring the promise of traffic management,
+allowing one to avoid congested areas \autocite{nafi_vanet_2012}, as well as
+expanding the breadth of infotainment systems \autocite{noori_novel_2013}.
 
-As our vehicles are increasingly connect
+However bringing the ``Internet of Things'' to vehicles exposes this long
+standing promise that the physical network is secured. With this no longer true,
+what aspects of the networks we use will have to change. Furthermore, if your
+vehicle begins to vote on traffic signals to dynamically relieve traffic
+congestion \autocite{nafi_vanet_2012}, how does that expose the anonymity of
+the driver? 
+FlexRay, despite its fantastic reliability, and strong performance is simply
+unprotected for the coming capabilities of connected vehicles
+\autocite{kleberger_security_2011}. Forwarding messages external to the vehicle
+onto the FlexRay steering bus, or braking system can cause a great deal of harm.
+While FlexRay will assure add devices are heard, it doesn't protect someone from
+spoofing a new device on the network. Ironically, LIN has more protection here
+since the master must initiate all transfers.  One would have to exploit
+firmware, or even ASIC hardware in the LIN master to exploit a LIN bus.  
 
-It is an exciting time to see what advanced will be
+ISO 13700 Diagnostics over IP, and its parent standard Universal
+Diagnostic Protocol are addressing the problem of authentication within the
+application layers \autocite{std_doip}. Allowing these systems to be implemented over existing
+transports, but locking the ECUs down with challenge response.  Perhaps this is
+will be the trend. Just as SSL is the defacto authentication system in practice
+today, application level security may address the coming security requirements
+for vehicle protocols of the future. 
+
+As our vehicles are increasingly connected. It is an exciting time to see what
+advances will be
 made in the realm of vehicle protocols to meet this growing bandwidth bottleneck,
 but maintain the critical safety specifications which keeps us blissfully unaware
 of the mountain of software that make our cars function. 
