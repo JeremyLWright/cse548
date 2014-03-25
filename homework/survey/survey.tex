@@ -78,7 +78,7 @@ reliability since, when the air bag needs to deploy, being late is useless.
 
 This survey will discuss the industrial physical layers commonly used in
 vehicles today: CAN \autocite{std_can}, LIN \autocite{std_lin} and FlexRay
-\autcite{std_flexray}, and the software protocols that run over
+\autocite{std_flexray}, and the software protocols that run over
 them, ISO, FlexRay, and MOST. Vehicle network design takes an approach similar
 to a VoIP network than how one would design a network primarily for email, and
 internet.  In these types of networks latency and jitter are key functions that
@@ -100,8 +100,7 @@ the advent of CAN in 1986, these systems were completely segregated, and often
 implemented by different vendors e.g. the door lock system would be physically
 separated from the truck latch.  Segregated there was no issue of contention
 since the system fully owned the communication channels it needed. hwever this
-also resulted in a great deal of redundency, cost, and weight \todo{cite bmw
-weight}.  Furthermore, many functions can have enhancled accuracy or precision
+also resulted in a great deal of redundency, cost, and weight.  Furthermore, many functions can have enhancled accuracy or precision
 by combining several different data sources in a scheme called sensor fusion.
 CAN was intrduced to address these issues.  CAN allowed ECUs to be linked
 together with a single twisted pair of copper wires, and included a novel
@@ -156,7 +155,8 @@ physical layers must continue to function in the presense of high electric
 fields or magnetice fields or other anomouly.  Ethernet for example doesn't meet
 this requirement. Within HVAC, one must be carefy to lay ethernet lines around
 flourcent tube lighting. The magnetic fields genertaed by the neon gasses
-arching can disrupt the ethernet cables high higher speeds. In a vehcile this
+arching can degrade performance at higher speeds
+\autocite{center_interesting_ethernet}. In a vehcile this
 variably of network quality is unacceptable. 
 
 
@@ -196,9 +196,47 @@ D & $> 1$ Mbps    & Media and infotainment \\
 \end{table}
 
 \subsection{CAN} 
-CAN is a Class C, half-duplex, self-initated network type. CAN provides prioity based messaging by
-implementing an OR function into the physical layer itself. 
+CAN is a Class C, half-duplex, self-initated network type. CAN provides priority based messaging by
+implementing an OR function into the physical layer itself. CAN consists of
+a twisted differential pair of copper wires, and a ground sleeve.  The
+transeiver sends uses an open collector allowing the logical bus value to float
+high to 1. This makes 0 the dominate bit.  When a node wishes to send a message
+on the bus, it begins pulling the line down signaling the betting of a frame,
+and the id of the message. Simultaneously, the transceiver measures the line to
+verify the signal it tried to put on the line, was transfered to the receivers.
+In this way the sender immediately knows every bit was successfully sent or not.
+Essentially every ECU can begin sending a message at the same time, the message
+with the most ones wins, and other senders will back off. This process is call
+arbitration, and implements priority at the physical level. Message identifiers
+are designed with a balanced number of ones to describe the desired priority
+relationships. J1939 is a standard set of CAN identifiers designed for just
+purpose \autocite{sae_j1939}.
 
+Besides prioirty at the physical level, CAN defines this priority scheme should
+exist through the transeiver up through the software stack.  The CAN standard
+defines that tranceivers must have 3 hardware buffers which employ the same
+voting scheme. At a high level, when one wishes to send data on the network you
+write you messages to 1 of the three hardware buffers in a round-robin fashion.
+The hardware then sends the highest prioity message as soon as the bus is
+available i.e. either the bus is idle, or the current message is the hightest
+proity and wins arbitration. One level above this, the software stacks should
+be implemented as prioirty queues removing the highest priotiy messages first
+\autocite{std_can}.  In this way, highest prioirty messages of the system as
+a whole are always sent first.  Individual ECUs also schedule their own highest
+prioity message to be sent first. The physical bus' pirioty scheme assures that
+the highest prioity messages are sent on the bus.  
+
+Secondly CAN deals with the issue of CAN transceivers who are stuck sending high
+prioity message and flooding the bus with superflouous data. CAN transceivers
+include a hardware watchdog looking for error frames. Error frames are always
+highest prioirty and can send ECU's to a buss off mode where they cannot talk at
+all giving control back to good citizens of the bus. Implementing this function
+contributes to the higher cost of CAN as opposed to busses like LIN. All can
+tranceivers must be licensed by Bosch to verify they meet the specification.
+This license cost is carried by the chip manufactures, which in turn raises the
+cost of the devices to implementors. 
+
+To acheive data integrity, each can frame is packed with a 32-bit CRC. 
 
 \begin{figure}
   \centering
@@ -206,33 +244,44 @@ implementing an OR function into the physical layer itself.
   \caption{CAN Frame without bit stuffing}
   \label{fig:can_frame}
 \end{figure}
+
 Can was the first industrial protocol for vehicles, and CAN is used for nearly
 all systems of a vehicle, except for the comfort system which require higher
-bandwidth than CAN provides. The novel concept introduced by CAN was the bit
-priority voting system built into the FlexRay Flexray did some stuff that some
-people care about, do I care, probably not, but whatev.
-
-\todo{Show network packet structure}
-\todo{Show how the voting/priority works}
-\todo{describe now the internal hardware provides and additional level of
-priority}
+bandwidth than CAN provides.
 
 \subsection{LIN}
-LIN is a class A, half duplex, master initiated network type. It provides a low cost network capable of
-interfacing up to 16 separate slave units. LIN is a half-
+LIN is a class A, half duplex, master initiated network type. It provides a low
+cost network capable of interfacing up to 16 separate slave units. LIN is
+typically used to create small local networks of sensors, which contribute data
+to a master ECU who in turn communicates on a vehicle wide CAN bus
+\autocite{lukasiewycz_system_2013}.  This reduces the cost and complexity since
+LIN can be implemented on a single wire, with hardware as simple as a UART
+\autocite{std_lin}.  
+
+LIN to support the contrait of trivial hardware, LIN does not implement
+a prioirty mechanism at the physical level, and instead relies on a master-slave
+mechanism. In LIN, all communicate is initiated from the master. The master then
+ensures that the latency requirements of individual nodes are met. While this is
+not as scalably as CAN's prioity mechanism, LIN's limited size makes it very
+useful for smart sensors to publish data.
+
 \begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{LIN_frame.png}
   \caption{LIN frame}
   \label{fig:lin_frame}
 \end{figure}
-\todo{network topography}
-\todo{How it acheives guarnateed latency}
-Lin bus is a serial bus designed for ultra-low cost low data rate systems.
 
-\subsection{Flexray}
+\subsection{FlexRay}
 FlexRay is a Class D, full duplex self initiated, network type. It provides very high performance up to 10
-Mbps while retaining a strong transmission error correctino scheme.  
+Mbps while retaining a strong transmission error correction scheme.  FlexRay
+supports both optical and electrical transport on the physical layer.  To
+address availablity, FlexRay divinds transmission into major frames. Each major
+frame is divided into two minor frames, a static frame and a dynamic frame. The
+static frame implements a master schedule system reserving fixed perioids of
+time to fixed ECUs.  The dynamic phase allows for event triggered messages
+similar to CAN \autocite{luo_research_2008}.  
+
 \begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{Flexray.PNG}
@@ -240,7 +289,57 @@ Mbps while retaining a strong transmission error correctino scheme.
   \label{fig:flexray_frame}
 \end{figure}
 
+For data integrity FlexRay provides a 24bit CRC. FlexRay supports both star
+networks for highest performance,  or multi-drop media for reduced cost. FlexRay
+supprot dual channels each operating at up to 10 Mb/s. This adds extra
+relability. FlexRay pushes strict system requiremnts on macimum allowable clock
+drift of 0.15\%. While this accuracy cannot be acheived with a standard
+microcotnroller RC oscillator, a quartz crystal oscillator can provide this
+level of precision quite easily \autocite{_crystal_2014}. Cheng-lin shows how
+FlexRay's reliablity is independent of bus loading where can's reliability
+degrades as the bus becomes loaded \autocite{cheng-lin_real-time_2010}.  In CAN
+lower priority messages are held off while higher prioirty messages are
+transfered summarized in Figure~\ref{fig:can_vs_flexray_reliability}. Using
+a poisson error model, Cheng models the delay of low prioirty messages as
+a function of the bus load. Intuitively this makes sense, CAN messages are event
+triggered, and both the software layers, and hardware layers route highest
+prioty messages first. Then if an important, but not quite the highest prioity
+message is sitting in an ECU queue, it can wait a long period of time until it
+has an opportunity to send the message.
+Figure~\ref{fig:can_vs_flexray_reliability} shows that this error
+exponentionally approaches 100\% propbabilty of failure, eventually failing at
+bus load of about 90\%. FlexRay however remains constant within this error
+model using two mechanisms. Firstly the static domain will route all prioity messages according
+to the defined schedule. This is the benefit of Time triggered networks,
+something that \emph{could} be done with CAN, but wasn't part of the original
+intent. Secondly, FlexRay provides redundency in two methods. Firstly FlexRay
+defines a dual channel redundency allowing a failed bus to send data over a back
+channel. For the highest level of reliability however, FlexRay supports Dual
+message, Dual channel which sends duplicate data over the reduncenat channel,
+hence sending all messsages twice.  This is the highest level of reliabity and
+according to Cheng results in a total probability of failure of $7.374 \times
+10^{-50}$.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{FlexRaySystemReliability.png}
+  \caption{CAN vs FlexRay Reliability}
+  \label{fig:can_vs_flexray_reliability}
+\end{figure}
+
+
 \section{Messaging Schemes}
+We've seen how the physical layer of CAN provides a prioity scheme, but its
+reialibiltiy is still susceptible to bus load factors. FlexRay's physical layer
+however incorporates a two phase major frame to supprot both priority and time
+based messages, additionally providing dual channel and redundant messaging
+resulting in a strongly reliable protocol.  However by stepping up a layer from
+the physical, we can improve the reliability of CAN bu incorporating some of
+FlexRay's time trigger concepts. This is the primciple between message schemes.
+At a layer above the phsycial layer, we can provide additional guarantees to
+provide a more reliable channel. Similar to how TCP provides an in-order
+guiarnteed deliver over IP, WE can provide guaranteed access for CAN.
+
 Each of the network types we've looked at are single media, multiple access
 networks.  All ECUs, share a single set of wires to communicate to each other.
 Ethernet is also such a configuration. However Ethernet's start of transmission
@@ -253,12 +352,14 @@ system. Such an event renders the vehcile an uncontrollable missle. But where Et
 due to its randomized start of transmission scheme, industrial protocols have
 two major schemes time triggered, and event triggered messaging for dealing with denial of service, and define a fixed
 latency. 
+
 \subsection{Time Triggered Messages}
+\label{sec:time_trigger}
 Time triggered message schemes send data at a rated defined by a network
 ``master schedule''. This is essentially time division multiplexing the
-communication channel. The upseide to time triggered messaging is the simplicy
+communication channel. The upseide to time triggered messaging is the simplify
 of analysis. When all messages are defined for bounded windows of transmission,
-it is excplicitly known what all message latencies are.  The downside is
+it is explicitly known what all message latencies are.  The downside is
 composability. Vehicle manufactures tend to build vehicle systems over time,
 making small improvements and composing new functions reusing smaller functions
 which already exist. Since the ``master schedule'', is truly a single document
@@ -269,7 +370,7 @@ Time triggered messaging is primarily used in fail-safe systems such as steering
 and braking. BMW's steer-by-wire systems use FlexRay for very high speed
 communication, between the steering wheel, and the steering actuators. The
 steering wheel sends it's current angle, and velocity periodically to the
-actuator. If the actuator doesn't recieve a message from the steering wheel on
+actuator. If the actuator doesn't receive a message from the steering wheel on
 the scheduled time, it can perform some error mechanism to protect the vehcile
 from a potentially failed steering wheel.  Braking is a similar design allowing
 the vehicle to fail safely if communication channels are faulty. 
@@ -283,13 +384,44 @@ about. If the message schema does not support priority, then its possible for
 lower priorty messages to flood the bus, and prevent higher piroity messages
 from reaching the destination before the deadline. 
 
+\section{System Architecture}
+
+Now with various message schemes, over various transport, how are these pulled
+together to a consistent system archtecture.
+Figure~\ref{fig:heterogenous_network} shows a typical breakdown of networks
+according to the various functions within a vehicle. Initially, requirements are
+broken down into the primary categories of vehicle networks.  Infotainment
+systems include connectivity, GPS, music, and entertainment systems. These
+systems are bandwidth heavy, but do not require high safety, for these MOST
+(Media Oriented Service Transport) is typically used providing up to 12.5 Mbps.
+Next comes the dash, and instrument panels. Typically these don't require high
+bandwidth, but reliability and safety is paramount, this is a fit for time
+triggered CAN.  Next comes electronic door locks, mirror adjustments, and other
+simpel control mechanisms. For these LIN is a great fit, since they require low
+safety, and low speed.  Lastly, Engine, and transmission data. drive by wire,
+and electronic shifting. 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.4\textwidth]{network_topography.png}
+  \caption{Hetrogenous Vehcile Network \autocite{lukasiewycz_system_2013}}
+  \label{fig:heterogenous_network}
+\end{figure}
+
+Engines have grown exponentially in the amount of data they require to operate
+properly. Currently Mercedes vehciles are using up to 70 ECUs
+\autocite{guo_integrated_2009}.
+
 \section{Conclusion}
 Vehicle electronic are trending toward higher connectivity, higher security, and
-greater integration within the vehcile as well as new out of vehicle systems.
-These trends are already pushing the performance limits of its backbone protcol
+greater integration within the vehicle as well as new out of vehicle systems.
+These trends are already pushing the performance limits of its backbone protocol
 CAN, and while MOST provides a higher bandwidth link, it cannot complete with
-the safety offered by CAN. It is an exciting time to see what advanced will be
-made in the realm of vehcile protocols to meet this growing bandwith bottleneck,
+the safety offered by FlexRay.
+
+As our vehciles are increasingly connect
+
+It is an exciting time to see what advanced will be
+made in the realm of vehicle protocols to meet this growing bandwidth bottleneck,
 but maintain the critical safety specifications which keeps us blissfully unaware
 of the mountain of software that make our cars function. 
 
