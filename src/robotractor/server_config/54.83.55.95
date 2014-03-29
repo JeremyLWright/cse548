@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+	ServerAdmin jeremy@codestrokes.com
+	ServerName 54.83.55.95
+	ServerAlias 54.83.55.95
+	WSGIScriptAlias / var/www/54.83.55.95/index.wsgi
+	Alias /static/ /var/www/54.83.55.95/static/
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	<Location "/static/">
+		Options -Indexes
+	</Location>
+</VirtualHost>

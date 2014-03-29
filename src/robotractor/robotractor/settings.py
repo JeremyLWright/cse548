@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '1^4k3z+#7=l(w4tla)r^b9v5=^&06g(^j5sxrfv%6*yvjyzt1x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 
@@ -89,6 +89,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT='/var/www/54.83.55.95/static'
 TEMPLATE_DIRS=[os.path.join(BASE_DIR, 'templates')]
 LOGIN_URL=reverse_lazy('two_factor:login')
 LOGIN_REDIRECT_URL=reverse_lazy('two_factor:profile')
