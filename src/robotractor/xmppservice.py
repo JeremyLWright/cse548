@@ -20,14 +20,18 @@ class EchoBot(ClientXMPP):
 
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
+            sender = msg['from'];
+            import pdb
+            pdb.set_trace()
             #msg.reply("Processing command\n%(body)s" % msg)
             #msg.reply("Now sending tou some databse stuff.")
-            data = serializers.serialize("json", Tractor.objects.all())
+            tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
+            data = serializers.serialize("json", tractor)
             msg.reply(data).send()
 
 if __name__ == '__main__':
     print Tractor.objects.all()
-    xmpp = EchoBot('robot@54.83.55.95', 'robot')
+    xmpp = EchoBot('tractor-server@jabber.co.nz', 'Q9MTZx14we')
     xmpp.connect()
     xmpp.process(block=True)
 	

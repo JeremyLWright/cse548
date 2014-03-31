@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 class WorkingBoundary(models.Model):
@@ -35,11 +36,20 @@ class Waypoint(models.Model):
 
 
 class Tractor(models.Model):
-    owner = models.ForeignKey(Farm)
+    farm = models.ForeignKey(Farm)
     name = models.CharField(max_length=100)
     latitude = models.FloatField()
     longitude = models.FloatField()
     altitude = models.FloatField()
+    public_key = models.FileField(upload_to='keys')
+    jabberid = models.EmailField(max_length=254)
     def __unicode__(self):
         return self.name
+
+class RunningJob(models.Model):
+    last_checkin_time = models.DateTimeField(auto_now=True)
+    last_update_time = models.DateTimeField(auto_now=True)
+    active = models.BooleanField()
+    tractor = models.ForeignKey(Tractor)
+    job = models.ForeignKey(Job)
 

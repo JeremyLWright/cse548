@@ -19,7 +19,8 @@ class EchoBot(ClientXMPP):
             msg.reply("Thanks for sending\n%(body)s" % msg).send()
 
 if __name__ == '__main__':
-    xmpp = EchoBot('robot@54.83.55.95', 'robot')
+    #xmpp = EchoBot('robot@54.83.55.95', 'robot')
+    xmpp = EchoBot('tractor-server@jabber.co.nz', 'Q9MTZx14we')
     xmpp.connect()
     xmpp.process(block=True)
 	
