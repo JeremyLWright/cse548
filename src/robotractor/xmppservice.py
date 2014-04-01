@@ -1,12 +1,12 @@
 import logging
 import json
-
+from django.utils import timezone
 from sleekxmpp import ClientXMPP
 from sleekxmpp.exceptions import IqError, IqTimeout
 
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "robotractor.settings")
-from backend.models import Tractor, RunningJob, Waypoint, Job
+from backend.models import Tractor, RunningJob, Waypoint, Job, WorkingBoundary
 from django.core import serializers
 
 class EchoBot(ClientXMPP):
@@ -22,13 +22,21 @@ class EchoBot(ClientXMPP):
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
             sender = msg['from'];
+            import pdb
+            pdb.set_trace()
+            #msg.reply("Processing command\n%(body)s" % msg)
+            #msg.reply("Now sending tou some databse stuff.")
             tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
-            active_job = RunningJob.objects.filter(tractor=tractor)
+            active_job = RunningJob.objects.filter(tractor=tractor)[0]
             waypoints = Waypoint.objects.filter(job=active_job).order_by('sort_order')
+
+            active_job.last_checkin_time = timezone.now()
             data = {}
+            data["boundary"] = json.loads(serializers.serialize("json", [active_job.job.boundary]))
             data["tractor"] = json.loads(serializers.serialize("json", tractor))
-            data["job"]     = json.loads(serializers.serialize("json", active_job))
+            data["job"]     = json.loads(serializers.serialize("json", [active_job.job]))
             data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
+            active_job.save()
 
             msg.reply(json.dumps(data)).send()
 
