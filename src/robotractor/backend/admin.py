@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tractor, Farm, WorkingBoundary, Waypoint, Job, RunningJob
+from .models import Tractor, Farm, WorkingBoundary, Waypoint, Job, RunningJob, CompletedPoint
 
 class TractorAdmin(admin.ModelAdmin):
     pass
@@ -23,5 +23,10 @@ admin.site.register(Job, JobAdmin)
 
 class RunningJobAdmin(admin.ModelAdmin):
     pass
+
+class CompletedPointAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(CompletedPoint, CompletedPointAdmin)
+
 admin.site.register(RunningJob, RunningJobAdmin)
 # Register your models here.

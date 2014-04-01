@@ -34,7 +34,6 @@ class Waypoint(models.Model):
     job = models.ForeignKey(Job)
 
 
-
 class Tractor(models.Model):
     farm = models.ForeignKey(Farm)
     name = models.CharField(max_length=100)
@@ -53,3 +52,8 @@ class RunningJob(models.Model):
     tractor = models.ForeignKey(Tractor)
     job = models.ForeignKey(Job)
 
+class CompletedPoint(models.Model):
+    lat = models.FloatField()
+    longitude = models.FloatField()
+    update_time = models.DateTimeField(auto_now=True)
+    active_job = models.ForeignKey(RunningJob)

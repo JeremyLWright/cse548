@@ -6,7 +6,7 @@ from sleekxmpp.exceptions import IqError, IqTimeout
 
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "robotractor.settings")
-from backend.models import Tractor, RunningJob, Waypoint, Job, WorkingBoundary
+from backend.models import Tractor, RunningJob, Waypoint, Job, WorkingBoundary, CompletedPoint
 from django.core import serializers
 
 class EchoBot(ClientXMPP):
@@ -21,13 +21,20 @@ class EchoBot(ClientXMPP):
 
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
-            sender = msg['from'];
-            #import pdb
-            #pdb.set_trace()
-            #msg.reply("Processing command\n%(body)s" % msg)
-            #msg.reply("Now sending tou some databse stuff.")
+            sender = msg['from']
+            data = msg['body']
+
             tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
             active_job = RunningJob.objects.filter(tractor=tractor)[0]
+            if data != 'gimmeinfo':
+                points = json.loads(data)
+                c = CompletedPoint()
+                c.lat = points[0]
+                c.longitude = points[1]
+                c.active_job = active_job
+
+                c.save()
+
             waypoints = Waypoint.objects.filter(job=active_job).order_by('sort_order')
 
             active_job.last_checkin_time = timezone.now()
