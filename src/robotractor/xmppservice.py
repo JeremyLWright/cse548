@@ -22,8 +22,8 @@ class EchoBot(ClientXMPP):
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
             sender = msg['from'];
-            import pdb
-            pdb.set_trace()
+            #import pdb
+            #pdb.set_trace()
             #msg.reply("Processing command\n%(body)s" % msg)
             #msg.reply("Now sending tou some databse stuff.")
             tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
