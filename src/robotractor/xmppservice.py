@@ -1,11 +1,12 @@
 import logging
+import json
 
 from sleekxmpp import ClientXMPP
 from sleekxmpp.exceptions import IqError, IqTimeout
 
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "robotractor.settings")
-from backend.models import Tractor
+from backend.models import Tractor, RunningJob, Waypoint, Job
 from django.core import serializers
 
 class EchoBot(ClientXMPP):
@@ -21,13 +22,15 @@ class EchoBot(ClientXMPP):
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
             sender = msg['from'];
-            import pdb
-            pdb.set_trace()
-            #msg.reply("Processing command\n%(body)s" % msg)
-            #msg.reply("Now sending tou some databse stuff.")
             tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
-            data = serializers.serialize("json", tractor)
-            msg.reply(data).send()
+            active_job = RunningJob.objects.filter(tractor=tractor)
+            waypoints = Waypoint.objects.filter(job=active_job).order_by('sort_order')
+            data = {}
+            data["tractor"] = json.loads(serializers.serialize("json", tractor))
+            data["job"]     = json.loads(serializers.serialize("json", active_job))
+            data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
+
+            msg.reply(json.dumps(data)).send()
 
 if __name__ == '__main__':
     print Tractor.objects.all()
