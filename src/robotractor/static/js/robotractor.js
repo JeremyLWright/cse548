@@ -83,12 +83,11 @@ $(document).ready(function()
                 cache: false
             })
             .done(function(obj) {
-                var div = ""
-                for (var i in obj.objects)
-            {
-                div = div + "<h2>"+obj.objects[i].name+"</h2>";
-            }
-            $("#tractors").replaceWith(div);
+                var mSelect = $('#tractor-selector');
+                $.each(obj.objects, function(val, text) {
+                    console.log(text);
+              mSelect.append($('<option></option>').val(text.id).html(text.name));
+                });
             console.log(obj)
             });
         });
