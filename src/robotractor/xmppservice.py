@@ -9,6 +9,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "robotractor.settings")
 from backend.models import Tractor, RunningJob, Waypoint, Job, WorkingBoundary, CompletedPoint
 from django.core import serializers
 
+import pdb
 class EchoBot(ClientXMPP):
     def __init__(self, jid, password):
         super(EchoBot, self).__init__(jid, password)
@@ -49,6 +50,7 @@ class EchoBot(ClientXMPP):
 
 if __name__ == '__main__':
     print Tractor.objects.all()
+    #xmpp = EchoBot('tractor-server@54.83.55.95', 'Q9MTZx14we')
     xmpp = EchoBot('tractor-server@jabber.co.nz', 'Q9MTZx14we')
     xmpp.connect()
     xmpp.process(block=True)

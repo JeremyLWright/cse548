@@ -2,33 +2,72 @@
 {% load future i18n %}
 
 {% block nav_secret %}active{% endblock %}
-
+{% block extra_css %}
+    <style type="text/css">
+      #map-canvas { width: 1000px; height: 100% }
+    </style>
+{% endblock %}
 {% block content %}
-  <h1>{% block title %}My Farm{% endblock %}</h1>
 
-  <p>Your current tractors:</p>
-  <div id="tractors">
-      <!-- tractor locations -->
-  </div>
+
+<!--<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />-->
+    
+<div> <h4> Set boundary: </h4> 
+    <input id="b1" type="text"> 
+    <input id="b2" type="text"> 
+    <button type="button" onclick="setboundary('b1','b2')">Set Boundary</button>
+</div>
+<div>
+    <h4>Select Tractor:</h4>
+    <select name="T" multiple="multiple">
+        <option>T1</option>
+        <option>T2</option>
+        <option>T3</option>
+        <option>T4</option>
+        <option>T5</option>
+    </select><button type="button" onclick="view('T')">View Tractor Job</button>
+    <button type="button" onclick="Terminate('T')">Terminate Tractor Job</button></div>
+<h4>Select Waypoints for Job:</h4> <div> 
+    <input id="wpt1" type="text"> 
+    <button type="button" onclick="codeAddress('wpt1')">click to select waypoint1</button>
+    <button type="button" onclick="clearDiv1()">Clear</button>
+</div> 
+<div> 
+    <input id="wpt2" type="text"> 
+    <button type="button" value="Search End Address" onclick="codeAddress('wpt2')">click to select waypoint2</button>
+    <button type="button" onclick="clearDiv2()">Clear</button>
+</div>
+<div> 
+    <input id="wpt3" type="text"> 
+    <button type="button" onclick="codeAddress('wpt3')">click to select waypoint3</button>
+    <button type="button" onclick="clearDiv3()">Clear</button>
+</div> 
+<div>    
+    <button type="button" onclick="drawLine()">DRAW</button>
+    <button type="button" onclick="process()">Create Job</button>
+    <button type="button" onclick="launch()">Launch Job</button>
+</div>
+<div> 
+    Current Location:
+    <input id="currl" type="text"> 
+</div>
+<div id="map-canvas"></div> 
+</body> 
+
+
+
+
+
+
+<h1>{% block title %}My Farm{% endblock %}</h1>
+
+<p>Your current tractors:</p>
+<div id="tractors">
+    <!-- tractor locations -->
+</div>
 {% endblock %}
 
 {% block extrajavascript %}
-<script type="text/javascript">
-$(document).ready(function()
-        {
-        $.ajax({
-            url: "/api/v1/tractor/?format=json",
-            cache: false
-            })
-        .done(function(obj) {
-            var div = ""
-            for (var i in obj.objects)
-            {
-                div = div + "<h2>"+obj.objects[i].name+"</h2>";
-            }
-            $("#tractors").replaceWith(div);
-            console.log(obj)
-        });
-        });
-  </script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
+  <script type="text/javascript" src="/static/js/robotractor.js"></script>
 {% endblock %}
