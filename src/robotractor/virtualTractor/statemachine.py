@@ -4,14 +4,20 @@ class StateMachine:
     def __init__(self, xmpp, q):
         self.handlers = {}  #each handler is a function for a state
         self.startState = None
-        self.endStates = [] #
-	self.queue = q
+        self.endStates = []
+        self.queue = q
+	self.waypointdata = None
+	self.waypointlist = []
         self.lastwp = 0
-	self.nextwp = 0
-	self.endwp = 0
-	self.boundarylong = 0.0
-	self.boundarylat = 0.0
-        
+        self.nextwp = 0
+        self.endwp = 0
+        self.se_lat = 0.0
+        self.se_long = 0.0
+	self.nw_lat = 0.0
+	self.nw_long = 0.0
+	self.currentpos = (0.0, 0.0)
+	self.running = 0
+            
     def add_state(self, name, handler, end_state=0):  #default state is not an endstate
         name = upper(name)
         self.handlers[name] = handler
