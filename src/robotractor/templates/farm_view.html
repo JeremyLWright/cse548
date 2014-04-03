@@ -3,8 +3,9 @@
 
 {% block nav_secret %}active{% endblock %}
 {% block extra_css %}
+
     <style type="text/css">
-      #map-canvas { width: 1000px; height: 100% }
+   #map-canvas { display:none;}
     </style>
 {% endblock %}
 {% block content %}
@@ -15,51 +16,45 @@
 <div> <h4> Set boundary: </h4> 
     <input id="b1" type="text"> 
     <input id="b2" type="text"> 
-    <button type="button" onclick="setboundary('b1','b2')">Set Boundary</button>
+    <button class="btn btn-primary" type="button" onclick="setboundary('b1','b2')">Set Boundary</button>
 </div>
 <div>
     <h4>Select Tractor:</h4>
-    <select name="T" id="tractor-selector" multiple="multiple">
-    </select><button type="button" onclick="view('T')">View Tractor Job</button>
-    <button type="button" onclick="Terminate('T')">Terminate Tractor Job</button></div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Select Tractor <span class="caret"></span>
+        </button>
+    <ul class="dropdown-menu" role="menu"  name="T" id="tractor-selector" multiple="multiple">
+    </ul>
+</div>
+    <button class="btn btn-primary" type="button" onclick="view('T')">View Tractor Job</button>
+    <button class="btn btn-primary" type="button" onclick="Terminate('T')">Terminate Tractor Job</button></div>
 <h4>Select Waypoints for Job:</h4> <div> 
     <input id="wpt1" type="text"> 
-    <button type="button" onclick="codeAddress('wpt1')">click to select waypoint1</button>
-    <button type="button" onclick="clearDiv1()">Clear</button>
+    <button class="btn btn-primary" type="button" onclick="codeAddress('wpt1')">click to select waypoint1</button>
+    <button class="btn btn-primary" type="button" onclick="clearDiv1()">Clear</button>
 </div> 
 <div> 
     <input id="wpt2" type="text"> 
-    <button type="button" value="Search End Address" onclick="codeAddress('wpt2')">click to select waypoint2</button>
-    <button type="button" onclick="clearDiv2()">Clear</button>
+    <button class="btn btn-primary" type="button" value="Search End Address" onclick="codeAddress('wpt2')">click to select waypoint2</button>
+    <button class="btn btn-primary" type="button" onclick="clearDiv2()">Clear</button>
 </div>
 <div> 
     <input id="wpt3" type="text"> 
-    <button type="button" onclick="codeAddress('wpt3')">click to select waypoint3</button>
-    <button type="button" onclick="clearDiv3()">Clear</button>
+    <button class="btn btn-primary" type="button" onclick="codeAddress('wpt3')">click to select waypoint3</button>
+    <button class="btn btn-primary" type="button" onclick="clearDiv3()">Clear</button>
 </div> 
 <div>    
-    <button type="button" onclick="drawLine()">DRAW</button>
-    <button type="button" onclick="process()">Create Job</button>
-    <button type="button" onclick="launch()">Launch Job</button>
+    <button class="btn btn-primary" type="button" onclick="drawLine()">DRAW</button>
+    <button class="btn btn-primary" type="button" onclick="process()">Create Job</button>
+    <button class="btn btn-primary" type="button" onclick="launch()">Launch Job</button>
 </div>
 <div> 
     Current Location:
     <input id="currl" type="text"> 
 </div>
-<div id="map-canvas"></div> 
-</body> 
+<div id="map-canvas" style="width:700px;height:500px;margin-left:80px;"></div> 
 
-
-
-
-
-
-<h1>{% block title %}My Farm{% endblock %}</h1>
-
-<p>Your current tractors:</p>
-<div id="tractors">
-    <!-- tractor locations -->
-</div>
 {% endblock %}
 
 {% block extrajavascript %}

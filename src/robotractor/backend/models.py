@@ -32,6 +32,8 @@ class Waypoint(models.Model):
     longitude = models.FloatField()
     sort_order = models.IntegerField()
     job = models.ForeignKey(Job)
+    def __unicode__(self):
+        return "[{0}.{1}] {2}N x {3}W".format(self.job, self.sort_order, self.lat, self.longitude)
 
 
 class Tractor(models.Model):
@@ -51,9 +53,13 @@ class RunningJob(models.Model):
     active = models.BooleanField()
     tractor = models.ForeignKey(Tractor)
     job = models.ForeignKey(Job)
+    def __unicode__(self):
+        return "{0}/{1}".format(self.job, self.tractor)
 
 class CompletedPoint(models.Model):
     lat = models.FloatField()
     longitude = models.FloatField()
     update_time = models.DateTimeField(auto_now=True)
     active_job = models.ForeignKey(RunningJob)
+    def __unicode__(self):
+        return "[{0}] {1}N x {2}W @ {3}".format(self.active_job, self.lat, self.longitude, self.update_time)

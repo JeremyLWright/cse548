@@ -20,6 +20,8 @@ function initialize() {
         alert("address1=" + lat +"," + lng); 
 
     });
+    document.getElementById('map-canvas').style.display="block";
+
 }
 
 function codeAddress(id) {
@@ -83,10 +85,10 @@ $(document).ready(function()
                 cache: false
             })
             .done(function(obj) {
-                var mSelect = $('#tractor-selector');
+                var mSelect = $('#tractor-selector.dropdown-menu');
                 $.each(obj.objects, function(val, text) {
                     console.log(text);
-              mSelect.append($('<option></option>').val(text.id).html(text.name));
+              mSelect.append($('<li><a href="#"></a></li>').val(text.id).html(text.name));
                 });
             console.log(obj)
             });
