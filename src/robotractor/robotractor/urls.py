@@ -2,12 +2,13 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 from tastypie.api import Api
-from backend.api import TractorResource, WaypointResource, JobResource
+from backend.api import TractorResource, WaypointResource, JobResource, CompletedPointResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(TractorResource())
 v1_api.register(WaypointResource())
 v1_api.register(JobResource())
+v1_api.register(CompletedPointResource())
 
 from .views import (FarmPanelView, HomeView, RegistrationView, RegistrationCompleteView)
 admin.autodiscover()
