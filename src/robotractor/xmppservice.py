@@ -9,6 +9,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "robotractor.settings")
 from backend.models import Tractor, RunningJob, Waypoint, Job, WorkingBoundary, CompletedPoint
 from django.core import serializers
 
+import pdb
 class EchoBot(ClientXMPP):
     def __init__(self, jid, password):
         super(EchoBot, self).__init__(jid, password)
@@ -32,23 +33,26 @@ class EchoBot(ClientXMPP):
                 c.lat = points[0]
                 c.longitude = points[1]
                 c.active_job = active_job
-
                 c.save()
 
             waypoints = Waypoint.objects.filter(job=active_job).order_by('sort_order')
 
             active_job.last_checkin_time = timezone.now()
-            data = {}
-            data["boundary"] = json.loads(serializers.serialize("json", [active_job.job.boundary]))
-            data["tractor"] = json.loads(serializers.serialize("json", tractor))
-            data["job"]     = json.loads(serializers.serialize("json", [active_job.job]))
-            data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
             active_job.save()
+            if not active_job.active:
+                msg.reply(json.dumps("KillTractor")).send()
+            else:
+                data = {}
+                data["boundary"] = json.loads(serializers.serialize("json", [active_job.job.boundary]))
+                data["tractor"] = json.loads(serializers.serialize("json", tractor))
+                data["job"]     = json.loads(serializers.serialize("json", [active_job.job]))
+                data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
 
-            msg.reply(json.dumps(data)).send()
+                msg.reply(json.dumps(data)).send()
 
 if __name__ == '__main__':
     print Tractor.objects.all()
+    #xmpp = EchoBot('tractor-server@54.83.55.95', 'Q9MTZx14we')
     xmpp = EchoBot('tractor-server@jabber.co.nz', 'Q9MTZx14we')
     xmpp.connect()
     xmpp.process(block=True)

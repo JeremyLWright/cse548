@@ -25,6 +25,7 @@ class RunningJobAdmin(admin.ModelAdmin):
     pass
 
 class CompletedPointAdmin(admin.ModelAdmin):
+    ordering = ('-update_time',)
     pass
 admin.site.register(CompletedPoint, CompletedPointAdmin)
 

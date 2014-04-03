@@ -1,12 +1,19 @@
 from tastypie.resources import ModelResource
-from .models import Tractor, Job, Waypoint
+from .models import *
 from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 
-class TractorResource(ModelResource):
+class WorkingBoundaryResource(ModelResource):
     class Meta:
-        queryset = Tractor.objects.all()
-        resource_name = 'tractor'
+        queryset = WorkingBoundary.objects.all()
+        resource_name = 'workingboundary'
+        authentication = SessionAuthentication()
+        authorization = DjangoAuthorization()
+
+class FarmResource(ModelResource):
+    class Meta:
+        queryset = Farm.objects.all()
+        resource_name = 'farm'
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
 
@@ -21,5 +28,26 @@ class WaypointResource(ModelResource):
     class Meta:
         queryset = Waypoint.objects.all()
         resource_name = 'waypoint'
+        authentication = SessionAuthentication()
+        authorization = DjangoAuthorization()
+
+class TractorResource(ModelResource):
+    class Meta:
+        queryset = Tractor.objects.all()
+        resource_name = 'tractor'
+        authentication = SessionAuthentication()
+        authorization = DjangoAuthorization()
+
+class RunningJobResource(ModelResource):
+    class Meta:
+        queryset = RunningJob.objects.all()
+        resource_name = 'runningjob'
+        authentication = SessionAuthentication()
+        authorization = DjangoAuthorization()
+
+class CompletedPointResource(ModelResource):
+    class Meta:
+        queryset = CompletedPoint.objects.all()
+        resource_name = 'completedpoint'
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
