@@ -89,7 +89,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT='/var/www/54.83.55.95/static'
+STATICFILES_DIRS = ('/var/www/54.83.55.95/static',
+os.path.join(BASE_DIR, 'static'))
 TEMPLATE_DIRS=[os.path.join(BASE_DIR, 'templates')]
 LOGIN_URL=reverse_lazy('two_factor:login')
 LOGIN_REDIRECT_URL=reverse_lazy('two_factor:profile')

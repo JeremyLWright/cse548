@@ -24,6 +24,29 @@ function initialize() {
 
 }
 
+function drop_marker(lat, lng)
+{
+//    var latlng = new google.maps.LatLng(35.256, -111.644);
+    var latlng = new google.maps.LatLng(lat, lng);
+
+    var marker = new google.maps.Marker({
+        map: map,
+        position: latlng,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+    });
+
+}
+
+function drop_waypoint(lat, lng)
+{
+    var latlng = new google.maps.LatLng(lat, lng);
+
+     var marker = new google.maps.Marker({
+         map: map,
+         position: latlng,
+         icon: 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.25%7C0%7CFF0000%7C000000'});
+}
+
 function codeAddress(id) {
     var address = document.getElementById(id).value;
     geocoder.geocode({ 'address': address }, function (results, status) {
@@ -53,6 +76,20 @@ function process(id) {
 }
 function launch(id) {
     //initiate tractor ro process the job          
+}
+
+function fetch_points(id) {
+    //http://localhost:8000/api/v1/completedpoint/?id__gte=5&format=json
+    $.ajax({
+        url: 'http://localhost:8000/api/v1/completedpoint/?id__gte='+id,
+    type: 'GET',
+    cache:false
+    }).done(function(obj){
+        $.each(obj.objects, function(val, text) {
+                    drop_marker(text["lat"], text["longitude"]);
+                });
+
+    });
 }
 
 function drawLine() {

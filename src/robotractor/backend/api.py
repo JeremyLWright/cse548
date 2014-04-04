@@ -1,4 +1,5 @@
 from tastypie.resources import ModelResource
+from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from .models import *
 from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
@@ -9,6 +10,9 @@ class WorkingBoundaryResource(ModelResource):
         resource_name = 'workingboundary'
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
+        filtering = {
+                "name": ALL_WITH_RELATIONS
+                }
 
 class FarmResource(ModelResource):
     class Meta:
@@ -51,3 +55,6 @@ class CompletedPointResource(ModelResource):
         resource_name = 'completedpoint'
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
+        filtering = {
+                "id": ALL_WITH_RELATIONS,
+                }
