@@ -3,6 +3,14 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from .models import *
 from tastypie.authentication import SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
+from tastypie import fields
+
+class UserResource(ModelResource):
+    class Meta:
+        queryset = User.objects.all()
+        resource_name = 'user'
+        excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
+        allowed_methods = ['get']
 
 class WorkingBoundaryResource(ModelResource):
     class Meta:
@@ -22,6 +30,8 @@ class FarmResource(ModelResource):
         authorization = DjangoAuthorization()
 
 class JobResource(ModelResource):
+    boundary = fields.ForeignKey(WorkingBoundaryResource, 'boundary')
+    user = fields.ForeignKey(UserResource, 'user')
     class Meta:
         queryset = Job.objects.all()
         resource_name = 'job'
@@ -29,6 +39,7 @@ class JobResource(ModelResource):
         authorization = DjangoAuthorization()
 
 class WaypointResource(ModelResource):
+    job = fields.ForeignKey(JobResource, 'job')
     class Meta:
         queryset = Waypoint.objects.all()
         resource_name = 'waypoint'
@@ -58,3 +69,4 @@ class CompletedPointResource(ModelResource):
         filtering = {
                 "id": ALL_WITH_RELATIONS,
                 }
+

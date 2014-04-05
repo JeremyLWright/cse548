@@ -33,7 +33,9 @@
             <li class="{% block nav_home %}{% endblock %}">
                 <a href="{% url 'home' %}">{% trans "Home" %}</a></li>
             <li class="{% block nav_secret %}{% endblock %}">
-                <a href="{% url 'panel' %}">{% trans "My Farm" %}</a></li>
+                <a href="{% url 'panel' %}">{% trans "Live View" %}</a></li>
+            <li class="{% block nav_create_job %}{% endblock %}">
+                <a href="{% url 'create_job' %}">{% trans "Create Job" %}</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}

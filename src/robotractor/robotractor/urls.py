@@ -13,8 +13,9 @@ v1_api.register(WaypointResource())
 v1_api.register(TractorResource())
 v1_api.register(RunningJobResource())
 v1_api.register(CompletedPointResource())
+v1_api.register(UserResource())
 
-from .views import (FarmPanelView, HomeView, RegistrationView, RegistrationCompleteView)
+from .views import (FarmPanelView, HomeView, RegistrationView, RegistrationCompleteView, CreateJobView)
 admin.autodiscover()
 
 
@@ -35,6 +36,11 @@ urlpatterns = patterns(
         view=FarmPanelView.as_view(),
         name='panel',
     ),
+    url(
+        regex=r'^create_job/$',
+        view=CreateJobView.as_view(),
+        name='create_job',
+        ),
     url(
         regex=r'^account/register/$',
         view=RegistrationView.as_view(),

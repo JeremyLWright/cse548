@@ -33,3 +33,7 @@ class RegistrationCompleteView(TemplateView):
 @class_view_decorator(never_cache)
 class FarmPanelView(OTPRequiredMixin, TemplateView):
     template_name = 'farm_view.html'
+
+@class_view_decorator(never_cache)
+class CreateJobView(OTPRequiredMixin, TemplateView):
+    template_name = 'create_job.html'
