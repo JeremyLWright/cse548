@@ -5,16 +5,22 @@
 {% block nav_home %}active{% endblock %}
 
 {% block content %}
-  <h1>{% blocktrans %}RoboTractor Panel{% endblocktrans %}</h1>
-  <p>Welcome to RoboTractor Corporate Farm Management</p>
-
+  <h1>{% blocktrans %}RoboTractor Corporate Farm Management{% endblocktrans %}</h1>
+  <p>
   {% url 'registration' as reg_url %}
   {% url 'two_factor:login' as login_url %}
   {% url 'two_factor:setup' as setup_url %}
   {% url 'logout' as logout_url %}
   {% url 'secret' as secret_url %}
 
-  <h4>{% trans "Next steps:" %}</h4>
+  <h4>{% trans "My Farm:" %}</h4>
+  <ol>
+    <li>
+      <a href="{% url 'panel' %}">View Current Jobs</a></li>
+    <li>
+      <a href="{% url 'create_job' %}">Create New Job</a></li>
+  </ol>
+  <h5>{% trans "Registration Steps:" %}</h5>
   <ol>
     <li>{% blocktrans %}Start by <a href="{{ reg_url }}">registering</a> an
       account.{% endblocktrans %}</li>
@@ -25,7 +31,6 @@
     <li>{% blocktrans %}Then, <a href="{{ logout_url }}">logout</a> and
       <a href="{{ login_url }}">login</a> once more to your account to see
       two-factor authentication at work.{% endblocktrans %}</li>
-    <li>{% blocktrans %}At last, you've gained access to the
-      <a href="{{ secret_url }}">secret page</a>! :-){% endblocktrans %}</li>
   </ol>
+
 {% endblock %}
