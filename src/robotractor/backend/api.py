@@ -12,7 +12,7 @@ class UserResource(ModelResource):
         excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
         allowed_methods = ['get']
 
-class WorkingBoundaryResource(ModelResource):
+class WorkingBoundaryResource(ModelResource): 
     class Meta:
         queryset = WorkingBoundary.objects.all()
         resource_name = 'workingboundary'
@@ -37,6 +37,9 @@ class JobResource(ModelResource):
         resource_name = 'job'
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
+        filtering = {
+                "id": ALL_WITH_RELATIONS
+                }
 
 class WaypointResource(ModelResource):
     job = fields.ForeignKey(JobResource, 'job')
@@ -45,6 +48,9 @@ class WaypointResource(ModelResource):
         resource_name = 'waypoint'
         authentication = SessionAuthentication()
         authorization = DjangoAuthorization()
+        filtering = {
+                "job": ALL_WITH_RELATIONS
+                }
 
 class TractorResource(ModelResource):
     class Meta:
@@ -54,6 +60,7 @@ class TractorResource(ModelResource):
         authorization = DjangoAuthorization()
 
 class RunningJobResource(ModelResource):
+    job = fields.ForeignKey(JobResource, 'job')
     class Meta:
         queryset = RunningJob.objects.all()
         resource_name = 'runningjob'
@@ -61,6 +68,7 @@ class RunningJobResource(ModelResource):
         authorization = DjangoAuthorization()
 
 class CompletedPointResource(ModelResource):
+    active_job = fields.ForeignKey(RunningJobResource, 'active_job')
     class Meta:
         queryset = CompletedPoint.objects.all()
         resource_name = 'completedpoint'
@@ -68,5 +76,6 @@ class CompletedPointResource(ModelResource):
         authorization = DjangoAuthorization()
         filtering = {
                 "id": ALL_WITH_RELATIONS,
+                "active_job": ALL_WITH_RELATIONS
                 }
 

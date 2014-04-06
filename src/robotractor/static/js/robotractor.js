@@ -4,15 +4,88 @@ var geocoder;
 var map;
 var wpt1, wpt2, wpt3;
 var searchResults = [];
-function initialize() {
-    geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(35.256, -111.644);
-    var myOptions = {
-        zoom: 8,
-        center: latlng,
-    }
 
+function on_select_job(e)
+{
+    var jobId = $('#inputJobName').val();
+    $.ajax({
+        url: "/api/v1/job/?id__exact="+jobId+"&format=json",
+        cache: false
+    }).done(function(obj) {
+        //Select the Working Boundary
+
+        $.each(obj.objects, function(val, text){
+            console.log(obj);
+        });
+    });
+
+    //Select the waypoints for the job (job__exact=1&)
+    $.ajax({
+        url: "/api/v1/waypoint/?job__exact="+jobId+"&format=json",
+        cache: false
+    }).done(function(obj) {
+        console.log(obj);
+        var c = obj.objects[0];
+        var center_point = new google.maps.LatLng(c.lat, c.longitude);
+        map.setCenter(center_point);
+        $.each(obj.objects, function(id, element){
+            drop_waypoint(element.lat, element.longitude);
+        });
+
+
+        var lastIdFetched = 0;
+        //Setup the periodic call for completed waypoints
+        (function worker() {
+            $.ajax({
+                url: "/api/v1/completedpoint/?active_job__exact="+jobId+"&limit=0&id__gt="+lastIdFetched+"&format=json&limit=0",
+                success: function(data) {
+                    $.each(data.objects, function(id, element){
+                       drop_marker(element.lat, element.longitude);
+                       lastIdFetched = element.id
+                    });
+                },
+                complete: function() {
+                    // Schedule the next request when the current one's complete
+                    setTimeout(worker, 5000);
+                }
+            });
+        })();
+
+    });
+
+}
+
+function initialize_map()
+{
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(33.423687, -111.939271);
+    var myOptions = {
+        zoom: 14,
+        center: latlng,
+    };
     map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+    document.getElementById('map-canvas').style.display="block";
+}
+function initialize_farm_view(){
+    initialize_map();
+    $.ajax({
+        url: "/api/v1/job/?format=json&limit=0",
+        cache: false
+    })
+    .done(function(obj) {
+        var mSelect = $('#inputJobName');
+        $.each(obj.objects, function(val, text) {
+            console.log(text);
+            mSelect.append($('<option></option>').val(text.id).html(text.name));
+        });
+    });
+
+    $('#inputJobName').click(on_select_job);
+}
+
+function initialize_create_job() {
+
+    initialize_map();
     google.maps.event.addListener(map, "click", function(event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
@@ -24,31 +97,31 @@ function initialize() {
         $("body").data('waypointSortCount', sortOrder+1);
         // populate yor box/field with lat, lng
         console.log("Adding waypoint to job: "+job+" with index "+sortOrder);
-         var waypoint = {};
-         waypoint["lat"] = lat;
-         waypoint["longitude"] = lng;
-         waypoint["sort_order"] = sortOrder;
-         waypoint["job"] = job;
+        var waypoint = {};
+        waypoint["lat"] = lat;
+        waypoint["longitude"] = lng;
+        waypoint["sort_order"] = sortOrder;
+        waypoint["job"] = job;
 
-    swaypoint = JSON.stringify(waypoint);
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/waypoint/',
-        data: swaypoint,
-        contentType: "application/json"
-    }).done(function(obj, textStatus, request){
-        console.log("Done.");
+        swaypoint = JSON.stringify(waypoint);
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/waypoint/',
+            data: swaypoint,
+            contentType: "application/json"
+        }).done(function(obj, textStatus, request){
+            console.log("Done.");
+        });
+
+
     });
-
-
-    });
-    document.getElementById('map-canvas').style.display="block";
+    $('#btnSaveJobName').click(saveJobName);
 
 }
 
 function drop_marker(lat, lng)
 {
-//    var latlng = new google.maps.LatLng(35.256, -111.644);
+    //    var latlng = new google.maps.LatLng(35.256, -111.644);
     var latlng = new google.maps.LatLng(lat, lng);
 
     var marker = new google.maps.Marker({
@@ -63,9 +136,9 @@ function drop_waypoint(lat, lng)
 {
     var latlng = new google.maps.LatLng(lat, lng);
 
-     var marker = new google.maps.Marker({
-         map: map,
-         position: latlng,
+    var marker = new google.maps.Marker({
+        map: map,
+        position: latlng,
          icon: 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.25%7C0%7CFF0000%7C000000'});
 }
 
@@ -171,20 +244,5 @@ $(document).ready(function()
                     xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
                 }
             }
-            });
-            initialize();
-            $('#btnSaveJobName').click(saveJobName);
-
-            $.ajax({
-                url: "/api/v1/workingboundary/?format=json",
-                cache: false
-            })
-            .done(function(obj) {
-                var mSelect = $('#tractor-selector.dropdown-menu');
-                $.each(obj.objects, function(val, text) {
-                    console.log(text);
-                    mSelect.append($('<li><a href="#"></a></li>').val(text.id).html(text.name));
-                });
-                console.log(obj)
             });
         });
