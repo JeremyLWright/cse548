@@ -7,14 +7,6 @@ import json
 import time
 from Queue import Queue
 
-### to do: Add XMPP connection capability to connect to XMPP Server
-## secure connection is established with XMPP server
-
-## xmpp session will send encrypted json object in xmpp stanza
-## this object is to be decrypted, deserialized, then processed as a job
-
-## simulator must also serialize a status update as a json object, encrypt, and send through the stanza to the XMPP server
-
 class EchoBot(ClientXMPP):
 	def __init__(self, jid, password, q):
 		ClientXMPP.__init__(self, jid, password)
@@ -28,7 +20,8 @@ class EchoBot(ClientXMPP):
 		
 	def message(self, msg):
 		if msg['type'] in ('chat', 'normal'):
-			q.put(msg)
+			q.put(msg, True)
+			print "Message in queue:"+str(q.qsize())
 
 def calcBearing(origin, destination):
     lat1, lon1 = origin
@@ -79,15 +72,25 @@ def shutdown(cargo):
 
 def download_path(cargo):
     print "DOWNLOAD_PATH State"
-    
+
+    if (m.running == 0):
+	msg = "gimmekey"
+    	msg = m.tractor.pki_encrypt(msg)
+        xmpp.send_message(mto="tractor-server@jabber.co.nz", mbody=msg)
+        xmppreply = q.get()
+	xmppreplybody = xmppreply['body']
+	m.tractor.session_key = m.tractor.pki_decrypt(xmppreply['body'])
+	#print m.tractor.session_key
+	
     msg = "gimmeinfo"
     msg = m.tractor.encrypt(msg)
     xmpp.send_message(mto="tractor-server@jabber.co.nz", mbody=msg)
-    xmppreply = q.get()
-    print xmppreply
+    xmppreply = q.get(True)
+
+    #print xmppreply
     xmppreplybody = xmppreply['body']
     usabledata = json.loads(m.tractor.decrypt(xmppreply['body']))
-    #print usabledata
+    print usabledata
     #print usabledata['job']
 
     if (usabledata == "KillTractor"):
@@ -188,6 +191,7 @@ def upload_data(cargo):
 
     currentPos = m.currentpos
     msg = json.dumps(currentPos)
+    msg = m.tractor.encrypt(msg)
     xmpp.send_message(mto="tractor-server@jabber.co.nz", mbody=msg)
 
     #time.sleep(1)
@@ -198,7 +202,7 @@ def upload_data(cargo):
 
 if __name__ == '__main__':
 	try:
-	    q = Queue()     
+	    q = Queue(1)     
 	    xmpp = EchoBot('tractor01@jabber.co.nz', 'Q9MTZx14we',q)
 	    xmpp.connect()
 	    xmpp.process(block=False)
