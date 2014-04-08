@@ -4,6 +4,12 @@ proposal.pdf: proposal.tex References/References.bib machine.pdf job_file.pdf si
 	pdflatex proposal
 	pdflatex proposal
 	pdflatex proposal
+	latexdiff --flatten ../../midterm/midterm\ progress\ report/proposal.tex proposal.tex > diff.tex
+	pdflatex diff.tex
+	biber diff
+	pdflatex diff.tex
+	pdflatex diff.tex
+	pdflatex diff.tex
 
 .SUFFIXES: .pdf.dot
 

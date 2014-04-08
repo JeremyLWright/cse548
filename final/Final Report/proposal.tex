@@ -79,25 +79,54 @@ RoboTractor leverages the Django Web framework \autocite{_django_2014}
 to realize the required interfaces. Figure~\ref{fig:softwarecomponents} describes the connection of
 these components.  The combination of XMPP and REST in RoboTractor is
 a demonstration of how to extend the existing HTTP development environment
-i.e. "the web of things" into a stateful protocol. HTTP is by design
+i.e. ``the web of things'' into a stateful protocol. HTTP is by design
 stateless. XMPP on the other hand is a stateful streaming connection between two
-clients. In this case the vehicle (Tractor simulation) and a command server.  To achieve this mesh we
-will leverage a custom XMPP script to operate the streaming XMPP protocol securely and efficiently over a secure HTTP connection. This is essential for a scalable web service. 
-\subsection{Software}
-\subsubsection{XMPP Server}
-XMPP stands for Extensible Messaging and Presence Protocol. XMPP is a communication protocol
-that relies upon XML (Extensible Markup Language) for operation. XMPP is an open standard 
-that operates with a client-server architecture. Anyone may design, build, or operate their own server and/or client,
-and be able to communicate with others operating under the open standard. This means that XMPP is strongly decentralized, with no master or control servers. 
-Additionally, XMPP has support for security protocols such as TLS built into its base specification.
-XMPP operates by opening an XML document or session between two peers. Within this session, xml stanzas can be sent containing information.
-RoboTractor uses the ejabberd \autocite{_ejabberd} XMPP server as it provides an existing Python
-interface, to integrate with the rest of our Python based ecosystem. The vehicle simulators themselves use the open source sleekxmpp Python XMPP library as the client side XMPP interface. This allows communication between the vehicle simulators and the ejabberd XMPP server.
+clients. In this case the vehicle (tractor simulation) and a command server.  To achieve this mesh we
+will leverage a custom XMPP script to bridge gap between Django's RESTful
+interface and the streaming XMPP protocol securely and efficiently over a secure
+HTTP connection. This is essential for a scalable web service.
+
+\subsection{Software} 
+
+\subsubsection{XMPP Server} 
+
+XMPP stands for Extensible
+Messaging and Presence Protocol. XMPP is a communication protocol that relies
+upon XML (Extensible Markup Language) for operation. XMPP is an open standard
+that operates with a client-server architecture. Anyone may design, build, or
+operate their own server and/or client, and be able to communicate with others
+operating under the open standard. This means that XMPP is strongly
+decentralized, with no master or control servers.  Additionally, XMPP has
+support for security protocols such as TLS built into its base specification.
+XMPP operates by opening an XML document or session between two peers. Within
+this session, xml stanzas can be sent containing information.  RoboTractor uses
+the ejabberd \autocite{_ejabberd} XMPP server as it provides an existing Python
+interface, to integrate with the rest of our Python based ecosystem. The vehicle
+simulators themselves use the open source SleekXMPP Python XMPP library as the
+client side XMPP interface. This allows communication between the vehicle
+simulators and the ejabberd XMPP server.  
+
 \subsubsection{REST Interface}
-TastyPie provides REST \autocite{_toastdriven/django-tastypie_2014} by extending
-the existing Django Models.
-\subsubsection{Vehicle Simulator}
-The Vehicle Simulator is the device or machinery that is meant to be the recipient of the secure command controls and signals. For the RoboTractor project, this simulation is entirely custom built in Python. The Simulator operates on a state machine principle, with states for receiving data, operating on data, uploading data, and rest and shutdown. The vehicle simulator is designed to be extensible and easy to modify, with tunable parameters for the vehicle.
+REST is a web idiom which stands for REpresentational State Transfer.
+REST allows a website to expose data via a set of URLs. In this way REST
+provides a common interface to any HTTP enabled client. As HTTP becomes more and
+more pervasive REST allows one to aggregate several data sources with simple
+tools. Robotractor leverages the TastyPie framework to expose the Django models
+via an idiomatic REST interface \autocite{_toastdriven/django-tastypie_2014}. To
+demonstrate the REST interaction with XMPP, Robotractor uses AJAX (Asynchronous
+Javascript And XML) queries to interact with the data. This has the added
+benefit of making the site more responsive without requiring page refreshes to
+see new data. Essentially, the REST interface POSTs commands to the database.
+The database acts as a queue holding the messages until the XMPP adapter is
+ready to deliver them to tractor simulator.
+
+\subsubsection{Vehicle Simulator} The Vehicle
+Simulator is the device or machinery that is meant to be the recipient of the
+secure command controls and signals. For the RoboTractor project, this
+simulation is entirely custom built in Python. The Simulator operates on a state
+machine principle, with states for receiving data, operating on data, uploading
+data, and rest and shutdown. The vehicle simulator is designed to be extensible
+and easy to modify, with tunable parameters for the vehicle.
 
 \begin{figure}
 \centering
@@ -108,13 +137,46 @@ The Vehicle Simulator is the device or machinery that is meant to be the recipie
 
 \subsection{Security Model}
 RoboTractor deals with two primary security classes: One involving the vehicles
-and other assets, and one involving the system components and their communication channels.
-Because the project is web-based and uses PKI, numerous attack models have been created that this project will deal with. Within the class of communication channels, attacks may be present against the authentication systems of both users and assets. Robotractor currently employs advanced two-factor authentication. Usage of TLS and other best common practices will be implemented to prevent against replay attacks on the system, and also for establishing a secure session between assets and control. A dual-encryption scheme has been used to send encrypted control signals within an encrypted XMPP stanza to ensure high information assurance. Because this project utilizes Public Key Infrastructure, key protection is important.  To this end the RoboTractor project uses secure keys on assets with a Trusted Platform Module. By making both key-pairs private and secure, RoboTractor provides advanced communication security. On the other end, the server components must be secured as well using best common practices in server defense, firewall, patches, updates, etc. Additionally, the RoboTractor system will implement an advanced GPS location reporting system to provide physical security in case of asset theft. By defending against these attack models, the RoboTractor project presents the realization of an advanced system for signaling and control with high security.
+and other assets, and one involving the system components and their
+communication channels.  Because the project is web-based and uses PKI, numerous
+attack models have been created that this project will deal with. Within the
+class of communication channels, attacks may be present against the
+authentication systems of both users and assets. Robotractor currently employs
+advanced two-factor authentication. Usage of TLS and other best common practices
+will be implemented to prevent against replay attacks on the system, and also
+for establishing a secure session between assets and control. A dual-encryption
+scheme has been used to send encrypted control signals within an encrypted XMPP
+stanza to ensure high information assurance. Because this project utilizes
+Public Key Infrastructure, key protection is important.  To this end the
+RoboTractor project uses secure keys on assets with a Trusted Platform Module.
+By making both key-pairs private and secure, RoboTractor provides advanced
+communication security. On the other end, the server components must be secured
+as well using best common practices in server defense, firewall, patches,
+updates, etc. Additionally, the RoboTractor system will implement an advanced
+GPS location reporting system to provide physical security in case of asset
+theft. By defending against these attack models, the RoboTractor project
+presents the realization of an advanced system for signaling and control with
+high security.
 
 \section{Project Description}
 \label{sec:proj_desc}
-Implementation is divided into 2 primary phases (Marked as milestones on the attached Gantt chart). In the first integration phase we connected the various libraries and off the shelf components. We made sure that this integration did not weaken, but rather strengthened the security properties provided by each independent component.
-In the second phase we extended these components to provide command and control of agricultural vehicles. For schedule mitigation, David and Arun completed this phase before the framework is assembled. Once the framework was in place, David and Arun's interface designs were merged with the overall system. After this merging, development switched focus to testing and bug fixing, since the main components were operating at satisfactory levels. This also allowed refinement of the front-end interface to better suit the needs of both the project, and the rest of the RoboTractor components. As of the creation of this document, all Midterm and Final deliverables have been achieved. The following tasks have been updated to reflect work done, and remaining future improvements that are beyond the scope of this project.
+Implementation is divided into 2 primary phases (Marked as milestones on the
+attached Gantt chart). In the first integration phase we connected the various
+libraries and off the shelf components. We made sure that this integration did
+not weaken, but rather strengthened the security properties provided by each
+independent component.
+
+In the second phase we extended these components to provide command and control
+of agricultural vehicles. For schedule mitigation, David and Arun completed this
+phase before the framework is assembled. Once the framework was in place, David
+and Arun's interface designs were merged with the overall system. After this
+merging, development switched focus to testing and bug fixing, since the main
+components were operating at satisfactory levels. This also allowed refinement
+of the front-end interface to better suit the needs of both the project, and the
+rest of the RoboTractor components. As of the creation of this document, all
+Midterm and Final deliverables have been achieved. The following tasks have been
+updated to reflect work done, and remaining future improvements that are beyond
+the scope of this project.
 
 \begin{figure}
 \centering
@@ -124,7 +186,10 @@ In the second phase we extended these components to provide command and control 
 \end{figure}
 
 \subsection{Task 1 : Development Environment}
-This task consisted of setting up the development environment for the RoboTractor project. A project homepage was provided to us via the ASU virtual lab project. This home page provides source control in the form of a GIT repository which our project takes advantage of. In addition we used the amazon?s cloud service to develop and test our project. Additionally, two virtual machines were provided via the ASU virtual lab project to use as our project servers. Setup of these servers was automated with the creation of a script in order to download all required software packages. Remaining work for this task is to enable proper connectivity between the two assigned Virtual Machines.
+This task consisted of setting up the development environment for the
+RoboTractor project. A project homepage was provided to us via the ASU virtual
+lab project. This home page provides source control in the form of a GIT
+repository which our project takes advantage of. In addition we used the amazon's cloud service to develop and test our project. Additionally, two virtual machines were provided via the ASU virtual lab project to use as our project servers. Setup of these servers was automated with the creation of a script in order to download all required software packages. Remaining work for this task is to enable proper connectivity between the two assigned Virtual Machines.
 RoboTractor is built upon the Django Web Framework. The development environment is best
 described in \autocite{_django_2014}. The Development environment consists of
 two fabric configurations: one for development and a second for deployment. This
@@ -184,7 +249,8 @@ simulation agent relies on mathematical formulas involving GPS coordinates.
 Thorough testing of these algorithms and formulas had to be done to ensure that
 the operation of RoboTractor was as intended. Current operation of the Vehicle
 Simulation Tractor is as follows: Upon startup, the tractor enters a state in
-which it queries the XMPP server to provide a session key. Once this session key
+which it queries the XMPP server to provide a session key
+(Figure~\ref{fig:tractorstatemachine}). Once this session key
 is securely established, the simulation agent sends an encrypted request for job
 data. The XMPP Server interfaces with the database and front-end to build a JSON
 object containing this data, encrypts it, and sends it to the simulation agent.
@@ -214,31 +280,52 @@ File \autocite{_json_2014}.
 \label{fig:jobinput}
 \end{figure}
 
-The "single-page" web application is the modern design methodology to web
-applications today. Leveraging this design architecture the Front-end will query the REST API
+The ``single-page'' web application is the modern design methodology to web
+applications today. Leveraging this design architecture the front-end queries the REST API
 to draw the position of all tractors within a Google Map context. Additionally, 
-the frontend user interface is to be highly secure. This task has
-2 high level sub tasks:
+the frontend user interface is to be highly secure. Since the web frontend this provides a control
+channel to functioning machinery, security directly correlates to the safety of
+the system. This task has
+three high level sub tasks:
 
 \begin{enumerate}
-\item Path generation
-\item Map rendering
+\item Path Design and Input
+\item Map Rendering
 \item Two-Factor Authentication
-\item Vehicle Location Validation
 \end{enumerate}
 
-The user shall be able to input a path for a given tractor to drive. Our map rendering system allows the user to select the waypoints just by clicking on the map for which the system returns the latitude and longitude location information to the user. The user then can select that location as a waypoint, on top of which the real-time markers will be placed to display location and waypoint information. Through this method the user can select a number of waypoints and generate the path for a tractor. The path generation algorithm generates the path just by drawing a straight line between the waypoints in the order of the waypoints selected by the user. The path generated is then overlaid on top of the rendered Google map. By this way the user can view the path on the real time map. Waypoints input by the user, and sent to the backend web-service via the REST interface. The webservice stores the waypoints in a Model format until instructed to convert it to the Job Format and send it to the Tractor.
-The Tractor will then receive this path over the XMPP channel through the aforementioned secure communication channels. The UI periodically queries REST endpoint for the current position of the tractor, which the XMPP server writes to a database after it receives position updates from the Vehicle simulation agent, and updates it on the Google Map. The UI will also include automated two-point vehicle location validation, where the location of the vehicle is checked against the boundary.
-In addition we have real-time path view functionality where the farmer/owner can
-view the agricultural vehicle status in real-time. The vehicle is designed to
-report its location every five seconds. The location of all the vehicles is
-updated to the database and then live view functionality pulls the latitude and
-longitude location information from the database and renders them on the Google
-maps? Api interface as shown in Figure~\ref{fig:livejobpage}. This function also has security
-implications as the location tracking can also mitigate vehicular theft. Since
-all the communications are protected by a dual layer encryption the
-transmissions cannot be tampered with easily and hence making it infeasible for
-attacker to perform attacks on the system. 
+Via the web interface the user is able to input a path for a given tractor to
+drive (Figure~\ref{fig:jobinput}). Our map
+rendering system allows the user to select the waypoints just by clicking on the
+map for which the system returns the latitude and longitude location information
+to the REST interface, once successfully posted (HTTP 201), the UI renders the
+respective point on the map. The user then can select that location as a waypoint, on top of
+which the real-time markers will be placed to display location and waypoint
+information. Through this method the user can select a number of waypoints and
+generate the path for a tractor. The path generation algorithm generates the
+path by drawing a straight line between the waypoints in the order of the
+waypoints selected by the user. The generated path is then laid on top of
+the rendered Google map. By this way the user can view the path on the real time
+map. 
+
+The webservice stores the waypoints in a Model format until
+instructed to convert it to the Job Format and send it to the Tractor.  The
+Tractor receives this path over the XMPP channel through the
+aforementioned secure communication channels. The UI periodically queries REST
+endpoint for the position updates since the last query, which the XMPP server writes
+to a database after it receives position updates from the Vehicle simulation
+agent, and updates it on the Google Map. 
+Additionally, robotractor has a real-time path view
+functionality where the farmer/owner can view the agricultural vehicle status in
+real-time. The vehicle is designed to report its location every five seconds.
+The location of all the vehicles is updated to the database and then live view
+functionality pulls the latitude and longitude location information from the
+database and renders them on the Google map. This interface as shown in
+Figure~\ref{fig:livejobpage}. This function also has security implications as
+the location tracking can also mitigate vehicular theft. Since all the
+communications are protected by a dual layer encryption, the transmissions cannot
+be tampered with easily. Hence it is difficult for an attacker to perform
+attacks on the system. 
 
 
 \begin{figure}
@@ -248,27 +335,47 @@ attacker to perform attacks on the system.
 \label{fig:livejobpage}
 \end{figure}
 
-The RoboTractor also have schedule and boundary functionality, where the farmer/owner can use the scheduler functionality to upload job to the database without actually launching it, which can be done later. The Vehicle Location Validation functionality allows the farmer/owner to set up the boundary of his/her farm beyond which the vehicles will be either made in-operable or disabled to mitigate the vehicular thefts or accidents. Within the Vehicle Simulator designed this is as simple as moving the vehicle to the shutdown state. 
+The RoboTractor also have schedule and boundary functionality, where the
+farmer/owner can use the scheduler functionality to upload job to the database
+without actually launching it, which can be done later. The Vehicle Location
+Validation functionality allows the farmer/owner to set up the boundary of
+his/her farm beyond which the vehicles will be either made in-operable or
+disabled to mitigate the vehicular thefts or accidents. Within the Vehicle
+Simulator designed this is as simple as moving the vehicle to the shutdown
+state. 
 
 \subsection{Task 5: Server Backend}
-The Server Backend is the critical component which connects all components.
+The Server Backend is the critical component which connects all further
+subsystems.
 Extensive knowledge of Django will make this task easier. As it will require
-linking multiple components together in a orchestrated fashion. We have
+linking multiple components together in a orchestrated fashion. Our initial
+design used an existing Punjab library to connect Django to eJabberd
+\autocite{_twonds/punjab_2014}. However once we began implementing the interface
+we found since were were extending the XMPP session only to the REST interface
+and not all the way to the web browser, the advanced functionality of Punjab was
+unnecessary.  Instead we used SleekXMPP to setup the backend as an XMPP client.
+All tractors in the system connect to this XMPP endpoint, and the server indexes
+the Jabber ids against registered machines in the database. REST communicates to
+the database. This backend service uses that database to communicate to clients. 
+
+We have
 currently setup and tested our server running on Django.
 This task also includes the Service Side Session-Based Authentication. The
-Server is responsible for generating the Time based One-Time Password (TOTP) as described in RFC 6238 \autocite{rydell_totp_2011}. TOTP provides the "thing you have"
+Server is responsible for generating the Time based One-Time Password (TOTP) as
+described in RFC 6238 \autocite{rydell_totp_2011}. TOTP provides the ``thing you
+have''
 authentication factor. RFC 6238 describes generating a QR code from a private
 seed value. This setups up the preshared key between the user and the web
 service. At this point the user may use an standard authenticator app, such as
 Microsoft Authenticator or Google Authenticator. At each sign on, the user is
-prompted for their password "the thing you know", as well as a random number
+prompted for their password ``the thing you know'', as well as a random number
 from their device, "the thing you have".  Additionally, this helps prevent
 replay sign-on attacks since the transaction requires knowledge of the
 pre-shared key to generate the unique sign on credentials.
 
 \subsection{Task 6: REST Interface}
-The REST interface will server the primary means of interacting with the site.
-The Web interface will exist as a "single-page" app which leverages AJAX
+The REST interface serves the primary means of interacting with the system.
+The Web interface exists as a ``single-page'' application which leverages AJAX
 principles over this REST API. The REST interface is currently functional, and
 will be updated to interface further with the frontend interface and backend
 components as they are completed.
@@ -290,9 +397,17 @@ practices for web services \autocite{ibm_best_2002}.
 
 \subsection{Project Task Allocation}
 
-From the tasks outlined in Section~\ref{sec:proj_desc}, the breakdown of work is as follows:
-Jeremy Wright has configured the development environments and configuration and development of the REST and Frontend interface. Jeremy also researched into modeling trust zones which allow us to simulate trusted hardware in actual vehicles.  He operated as the project lead due to his experience in Python-based Web Applications.  Arun
-Balaji Buduru worked on the Server Backend and Frontend UI components, specifically with regards to the mapping interface and google maps API. David Lucero worked primarily on the Tractor simulation agents and their XMPP implementation, as well as assisting Jeremy in interfacing components together. Each group member has approximately 30\% workload of the project with the remaining 10\% shared due to the interconnected nature of all
+From the tasks outlined in Section~\ref{sec:proj_desc}, the breakdown of work is
+as follows: Jeremy Wright has configured the development environments and
+configuration and development of the REST and Frontend interface. Jeremy also
+researched into modeling trust zones which allow us to simulate trusted hardware
+in actual vehicles.  He operated as the project lead due to his experience in
+Python-based Web Applications.  Arun Balaji Buduru worked on the Server Backend
+and Frontend UI components, specifically with regards to the mapping interface
+and google maps API. David Lucero worked primarily on the Tractor simulation
+agents and their XMPP implementation, as well as assisting Jeremy in interfacing
+components together. Each group member has approximately 30\% workload of the
+project with the remaining 10\% shared due to the interconnected nature of all
 components. A detailed task breakdown can be seen in the attached Timeline.
 
 \subsection{Deliverables}
