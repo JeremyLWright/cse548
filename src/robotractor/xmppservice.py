@@ -16,7 +16,7 @@ class EchoBot(ClientXMPP):
         super(EchoBot, self).__init__(jid, password)
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
-        self.tpm = TPM("keys/robot-server.pub", "keys/tractor01.priv")
+        self.tpm = TPM("keys/tractor01.pub", "keys/robot-server.priv")
         
     def session_start(self, event):
         self.send_presence()
@@ -25,6 +25,7 @@ class EchoBot(ClientXMPP):
     def message(self, msg):
         if msg['type'] in ('chat', 'normal'):
             sender = msg['from']
+
             print "=========================="
             print "Received Raw message, "+msg['body']
             data = self.tpm.decrypt(msg['body'])
@@ -56,6 +57,7 @@ class EchoBot(ClientXMPP):
                 data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
                 rdata = json.dumps(data)
                 print "Send Data: "+rdata
+                pdb.set_trace()
                 edata = self.tpm.encrypt(rdata)
                 print "Encrypted: "+edata
                 msg.reply(edata).send()
