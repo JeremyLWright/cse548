@@ -1,4 +1,4 @@
-from Crypto.Cipher import PKCS1_v1_5
+from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA
 from Crypto import Random
@@ -18,21 +18,12 @@ class TPM():
         
         self.key["private"] = RSA.importKey(open(privKey).read())
         self.key["public"] = RSA.importKey(open(pubKey).read())
+        self.pub_cipher = PKCS1_OAEP.new(self.key["public"])
+        self.priv_cipher = PKCS1_OAEP.new(self.key["private"])
         pass
 
     def encrypt(self, msg):
-        h = SHA.new(msg)
-        cipher = PKCS1_v1_5.new(self.key["public"])
-        return base64.b64encode(cipher.encrypt(msg+h.digest()))
+        return base64.b64encode(self.pub_cipher.encrypt(msg))
 
     def decrypt(self, ciphermsg):
-        dsize = SHA.digest_size
-        sentinel = Random.new().read(15+dsize)      # Let's assume that average data length is 15
-
-        cipher = PKCS1_v1_5.new(self.key["private"])
-        message = cipher.decrypt(base64.b64decode(ciphermsg), sentinel)
-
-        digest = SHA.new(message[:-dsize]).digest()
-        if digest!=message[-dsize:]:                # Note how we DO NOT look for the sentinel
-            raise EncryptionError("Message verification failed.  Communication channel possibly compromised.")
-        return message[:-dsize]
+        return self.priv_cipher.decrypt(base64.b64decode(ciphermsg))
