@@ -161,15 +161,43 @@ here to implement a "root of trust" to include the automation server. Specifical
 \caption{Tractor Software State Machine}
 \label{fig:tractorstatemachine}
 \end{figure}
-The final deliverable for this task was to implement the tractor simulator. This has been achieved after multiple team discussions, and a state machine based vehicle simulator was written in python. Tasks such as XMPP communication, path processing, and status reporting were completed, and the simulator was updated with its required functionality. The state machine consumes the Job File format described in Figure~\ref{fig:job file}. Additionally, the vehicle simulator employs usage of public-key cryptography for its communications with the XMPP server. This ensures that the control and signals between the two are secure and provide high information assurance. Upon initial startup of the vehicle simulator agent, a session-key request message is encrypted with the server's public key. Once the server decrypts this request, it is processed, and a session key encrypted with the agent's public key is sent back. The vehicle simulator agent then decrypts the session key. This session key is used from here on out to encrypt and decrypt communication data that is being sent as the 'body' of an XMPP message. 
+The final deliverable for this task was to implement the tractor simulator. This
+has been achieved after multiple team discussions, and a state machine based
+vehicle simulator was written in python. Tasks such as XMPP communication, path
+processing, and status reporting were completed, and the simulator was updated
+with its required functionality. The state machine consumes the Job File format
+described in Figure~\ref{fig:job_file}. Additionally, the vehicle simulator
+employs usage of public-key cryptography for its communications with the XMPP
+server. This ensures that the control and signals between the two are secure and
+provide high information assurance. Upon initial startup of the vehicle
+simulator agent, a session-key request message is encrypted with the server's
+public key. Once the server decrypts this request, it is processed, and
+a session key encrypted with the agent's public key is sent back. The vehicle
+simulator agent then decrypts the session key. This session key is used from
+here on out to encrypt and decrypt communication data that is being sent as the
+``body'' of an XMPP message. 
 
-Because the goal of the RoboTractor project is to for remote control and signaling of an automated vehicle, mapping and coordinates play a big role in the simulator's operation. As a result, much of the operation of the vehicle simulation agent relies on mathematical formulas involving GPS coordinates. Thorough testing of these algorithms and formulas had to be done to ensure that the operation of RoboTractor was as intended. Current operation of the Vehicle Simulation Tractor is as follows: Upon startup, the tractor enters a state in which it queries the XMPP server to provide a session key. Once this session key is securely established, the simulation agent sends an encrypted request for job data. The XMPP Server interfaces with the database and front-end to build a JSON object containing this data, encrypts it, and sends it to the simulation agent. From here, the simulation agent processes the data to build its waypoints and path, and begins its simulated 'movement'. After every tic of movement, the agent sends an encrypted status update back to the XMPP server, which can then update the Front-end for user visibility. 
+Because the goal of the RoboTractor project is to for remote control and
+signaling of an automated vehicle, mapping and coordinates play a big role in
+the simulator's operation. As a result, much of the operation of the vehicle
+simulation agent relies on mathematical formulas involving GPS coordinates.
+Thorough testing of these algorithms and formulas had to be done to ensure that
+the operation of RoboTractor was as intended. Current operation of the Vehicle
+Simulation Tractor is as follows: Upon startup, the tractor enters a state in
+which it queries the XMPP server to provide a session key. Once this session key
+is securely established, the simulation agent sends an encrypted request for job
+data. The XMPP Server interfaces with the database and front-end to build a JSON
+object containing this data, encrypts it, and sends it to the simulation agent.
+From here, the simulation agent processes the data to build its waypoints and
+path, and begins its simulated 'movement'. After every tic of movement, the
+agent sends an encrypted status update back to the XMPP server, which can then
+update the Front-end for user visibility. 
 
 \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{Images/job_file.png}
 \caption{Job File Format}
-\label{fig:jobfile}
+\label{fig:job_file}
 \end{figure}
 
 As described in Figure~\ref{fig:signalpath}, the job files are stored in the
@@ -299,7 +327,7 @@ overall tasks of the project.
 \section{Risk Management of the project}
 Several potential issues have been identified that may pose risk to successful
 completion of this project. These risks have been identified in Table
-\ref{tab:risk management}. Along with the description, ratings have been assigned
+\ref{tab:riskmanagement}. Along with the description, ratings have been assigned
 to each risk identified, and potential mitigation strategies are described. During the course of project development, each of these risks was taken into consideration. For the risk of connections between components, the mitigation strategy was to include security on component connections. In the final version of the RoboTractor project this is done in two ways. The first way is that the XMPP server/client connections use SSL/TLS by default. This means that their communication channel is secured. In addition, the actual messages passed between the simulator and the tractor are themselves encrypted, providing an additional level of advanced security on the communication channel. 
 
 Another risk identified was the correctness of the vehicle simulation agents. The mitigation strategy of this risk was to fully design the simulation agents first, before development, and to review and test the design to ensure it would meet all requirements. This strategy was carried out, and the vehicle simulation agent itself is highly extensible. This allows easy changes and modifications if needed, while maintaining functionality and security. 
