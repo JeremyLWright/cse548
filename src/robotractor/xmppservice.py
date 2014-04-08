@@ -17,22 +17,43 @@ class EchoBot(ClientXMPP):
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
         self.tpm = TPM("keys/tractor01.pub", "keys/robot-server.priv")
+        self.key_exchanged = False
+        self.sequence = 0
         
     def session_start(self, event):
         self.send_presence()
         self.get_roster()
 
     def message(self, msg):
+        self.sequence = self.sequence + 1
         if msg['type'] in ('chat', 'normal'):
             sender = msg['from']
 
-            print "=========================="
+            print "==========SEQ {0}================".format(self.sequence)
+            if self.key_exchanged == False:
+                print "Performing Key exchange"
+                data = self.tpm.pki_decrypt(msg['body'])
+                print "Decrypted: '"+data+"'"
+                if data == 'gimmekey':
+                    print "Sending Session Key."
+                    pencrypt = self.tpm.pki_encrypt(self.tpm.session_key)
+                    msg.reply(pencrypt).send()
+                    self.key_exchanged = True
+                    return
+
+                    
             print "Received Raw message, "+msg['body']
             data = self.tpm.decrypt(msg['body'])
             print "Decrypted Data "+data
 
             tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
             active_job = RunningJob.objects.filter(tractor=tractor)[0]
+            if active_job.active == False:
+                print "Sending Kill Machine..."
+                msg.reply(self.tpm.encrypt(json.dumps("KillTractor"))).send()
+                print "================================"
+                return
+
             if data != 'gimmeinfo':
                 points = json.loads(data)
                 c = CompletedPoint()
@@ -40,14 +61,10 @@ class EchoBot(ClientXMPP):
                 c.longitude = points[1]
                 c.active_job = active_job
                 c.save()
-
-            waypoints = Waypoint.objects.filter(job=active_job.job).order_by('sort_order')
-
-            active_job.last_checkin_time = timezone.now()
-            if not active_job.active:
-                print "Sending Kill Machine..."
-                msg.reply(json.dumps("KillTractor")).send()
             else:
+                waypoints = Waypoint.objects.filter(job=active_job.job).order_by('sort_order')
+
+                active_job.last_checkin_time = timezone.now()
                 active_job.save()
                 print "Sending data."
                 data = {}
@@ -55,9 +72,9 @@ class EchoBot(ClientXMPP):
                 data["tractor"] = json.loads(serializers.serialize("json", tractor))
                 data["job"]     = json.loads(serializers.serialize("json", [active_job.job]))
                 data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
+                data["sequence"] = self.sequence
                 rdata = json.dumps(data)
                 print "Send Data: "+rdata
-                pdb.set_trace()
                 edata = self.tpm.encrypt(rdata)
                 print "Encrypted: "+edata
                 msg.reply(edata).send()
