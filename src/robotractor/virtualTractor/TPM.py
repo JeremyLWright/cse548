@@ -2,6 +2,7 @@ from Crypto.Cipher import PKCS1_v1_5
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA
 from Crypto import Random
+import base64
 
 class EncryptionError(Exception):
     def __init__(self, value):
@@ -22,14 +23,14 @@ class TPM():
     def encrypt(self, msg):
         h = SHA.new(msg)
         cipher = PKCS1_v1_5.new(self.key["public"])
-        return cipher.encrypt(msg+h.digest())
+        return base64.b64encode(cipher.encrypt(msg+h.digest()))
 
     def decrypt(self, ciphermsg):
         dsize = SHA.digest_size
         sentinel = Random.new().read(15+dsize)      # Let's assume that average data length is 15
 
         cipher = PKCS1_v1_5.new(self.key["private"])
-        message = cipher.decrypt(ciphermsg, sentinel)
+        message = cipher.decrypt(base64.b64decode(ciphermsg), sentinel)
 
         digest = SHA.new(message[:-dsize]).digest()
         if digest!=message[-dsize:]:                # Note how we DO NOT look for the sentinel
