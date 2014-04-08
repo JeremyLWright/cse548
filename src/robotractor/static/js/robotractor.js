@@ -4,18 +4,57 @@ var geocoder;
 var map;
 var wpt1, wpt2, wpt3;
 var searchResults = [];
+function on_emergency_stop(e)
+{
+        var runningJob = {"active": false};
+        srunningJob  = JSON.stringify(runningJob);
+        $.ajax({
+            type: 'PUT',
+            url: '/api/v1/runningjob/1/',
+            data: srunningJob,
+            contentType: "application/json"
+        }).done(function(obj, textStatus, request){
+            console.log("Done.");
+        });
+    
+}
 
 function on_select_job(e)
 {
     var jobId = $('#inputJobName').val();
+    //Delete all jobs on the active list.
+    $.ajax({
+        url: "/api/v1/runningjob/",
+        cache: false,
+        async: false,
+    }).done(function(obj) {
+        $.each(obj.objects, function(val, text){
+            $.ajax({
+                url: text.resource_uri,
+                cache: false,
+                async: false,
+                type: 'DELETE'
+            });
+        });
+    });
+
+
+    //Move this job to the running table.
     $.ajax({
         url: "/api/v1/job/?id__exact="+jobId+"&format=json",
-        cache: false
+        cache: false,
+        async: false
     }).done(function(obj) {
-        //Select the Working Boundary
+        var runningJob = {"active": true, "job": "/api/v1/job/"+jobId+"/", "tractor": "/api/v1/tractor/1/"};
+        srunningJob  = JSON.stringify(runningJob);
 
-        $.each(obj.objects, function(val, text){
-            console.log(obj);
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/runningjob/',
+            data: srunningJob,
+            contentType: "application/json"
+        }).done(function(obj, textStatus, request){
+            console.log("Done.");
         });
     });
 
@@ -37,7 +76,7 @@ function on_select_job(e)
         //Setup the periodic call for completed waypoints
         (function worker() {
             $.ajax({
-                url: "/api/v1/completedpoint/?active_job__exact="+jobId+"&limit=0&id__gt="+lastIdFetched+"&format=json&limit=0",
+                url: "/api/v1/completedpoint/?active_job__exact=1&limit=0&id__gt="+lastIdFetched+"&format=json&limit=0",
                 success: function(data) {
                     $.each(data.objects, function(id, element){
                        drop_marker(element.lat, element.longitude);
@@ -81,6 +120,7 @@ function initialize_farm_view(){
     });
 
     $('#inputJobName').click(on_select_job);
+    $('#btnStopJob').click(on_emergency_stop);
 }
 
 function initialize_create_job() {
@@ -127,7 +167,7 @@ function drop_marker(lat, lng)
     var marker = new google.maps.Marker({
         map: map,
         position: latlng,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+         icon: 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.25%7C0%7CFF0000%7C000000'
     });
 
 }
@@ -139,7 +179,8 @@ function drop_waypoint(lat, lng)
     var marker = new google.maps.Marker({
         map: map,
         position: latlng,
-         icon: 'https://chart.googleapis.com/chart?chst=d_map_spin&chld=0.25%7C0%7CFF0000%7C000000'});
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+    });
 }
 
 function codeAddress(id) {

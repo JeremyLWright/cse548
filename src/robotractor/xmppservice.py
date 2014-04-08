@@ -35,7 +35,7 @@ class EchoBot(ClientXMPP):
                 c.active_job = active_job
                 c.save()
 
-            waypoints = Waypoint.objects.filter(job=active_job).order_by('sort_order')
+            waypoints = Waypoint.objects.filter(job=active_job.job).order_by('sort_order')
 
             active_job.last_checkin_time = timezone.now()
             active_job.save()
