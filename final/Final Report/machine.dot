@@ -1,0 +1,42 @@
+digraph G {
+
+subgraph cluster0 {
+node [style=filled, color=white];
+style=filled;
+color=lightgrey;
+dp [label="Download Path"];
+us [label="Upload Status"];
+dp -> us [style=invis];
+label="XMPP Communication";
+}
+
+subgraph cluster1 {
+node [style=filled, color=white];
+style=filled;
+color=lightgrey;
+rest [label="Rest"];
+run [label="Run Path"];
+rest -> run;
+run -> rest [label="Path Complete\nError"];
+label="Autopilot Engaged";
+}
+
+subgraph cluster2 {
+node [style=filled, color=white];
+style=filled;
+color=lightgrey;
+off;
+label="Autopilot Disengaged";
+}
+
+rest -> dp [dir="both", style="dotted"];
+dp -> run[dir="both", style="dotted"];
+
+rest -> us[dir="both", style="dotted"];
+us -> run[dir="both", style="dotted"];
+
+
+rest -> off;
+
+
+}

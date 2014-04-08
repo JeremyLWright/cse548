@@ -1,0 +1,12 @@
+
+digraph structs {
+node [shape=record]
+    job_header [shape=record,label="{Job Header | {pathname|<here> username|time}| pathdata}"];
+    path_header [shape=record,label="{Path Header | {waypoint count|<here> starting waypoint|ending waypoint}| waypoints}"];
+
+    waypoint [shape=record,label="{Waypoint | {speed|<here> latitude|longitude}}"];
+
+    job_header -> path_header;
+    path_header -> waypoint [label="1..n"];
+    waypoint -> waypoint [label="Next Waypoint"];
+}
