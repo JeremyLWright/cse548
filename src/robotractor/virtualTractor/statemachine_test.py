@@ -2,6 +2,7 @@ from statemachine import StateMachine
 from sleekxmpp import ClientXMPP
 from sleekxmpp.exceptions import IqError, IqTimeout
 from math import *
+from TPM import TPM
 import json
 import time
 from Queue import Queue
@@ -69,6 +70,7 @@ def at_rest(cargo):
 def shutdown(cargo):
     print "SHUTTING_DOWN state"
     msg = "shutting down"
+    msg = m.tractor.encrypt(msg)
     xmpp.send_message(mto="tractor-server@jabber.co.nz", mbody=msg)
     xmpp.disconnect()
     m.running = 0
@@ -79,14 +81,13 @@ def download_path(cargo):
     print "DOWNLOAD_PATH State"
     
     msg = "gimmeinfo"
+    msg = m.tractor.encrypt(msg)
     xmpp.send_message(mto="tractor-server@jabber.co.nz", mbody=msg)
     xmppreply = q.get()
-    #print xmppreply
+    print xmppreply
     xmppreplybody = xmppreply['body']
-    usabledata = json.loads(xmppreply['body'])
+    usabledata = json.loads(m.tractor.decrypt(xmppreply['body']))
     #print usabledata
-    #import pdb
-    #pdb.set_trace()
     #print usabledata['job']
 
     if (usabledata == "KillTractor"):
@@ -189,25 +190,28 @@ def upload_data(cargo):
     msg = json.dumps(currentPos)
     xmpp.send_message(mto="tractor-server@jabber.co.nz", mbody=msg)
 
-    time.sleep(1)
+    #time.sleep(1)
     
     newState = "AT_REST"
     print "///////////////////////////////////////////"
     return (newState, cargo)
 
 if __name__ == '__main__':
-    q = Queue()     
-    xmpp = EchoBot('tractor01@jabber.co.nz', 'Q9MTZx14we',q)
-    xmpp.connect()
-    xmpp.process(block=False)
-    m = StateMachine(xmpp, q)
-    
-    m.add_state("AT_REST", at_rest)
-    m.add_state("DOWNLOAD_PATH", download_path)
-    m.add_state("EXECUTE_PATH", execute_path)
-    m.add_state("UPLOAD_DATA", upload_data)
-    m.add_state("SHUTTING_DOWN", shutdown)
-    m.add_state("OFF", None, end_state = 1)
-    
-    m.set_start("AT_REST")
-    m.run(1)
+	try:
+	    q = Queue()     
+	    xmpp = EchoBot('tractor01@jabber.co.nz', 'Q9MTZx14we',q)
+	    xmpp.connect()
+	    xmpp.process(block=False)
+	    m = StateMachine(xmpp, q)
+	    
+	    m.add_state("AT_REST", at_rest)
+	    m.add_state("DOWNLOAD_PATH", download_path)
+	    m.add_state("EXECUTE_PATH", execute_path)
+	    m.add_state("UPLOAD_DATA", upload_data)
+	    m.add_state("SHUTTING_DOWN", shutdown)
+	    m.add_state("OFF", None, end_state = 1)
+	    
+	    m.set_start("AT_REST")
+	    m.run(1)
+	finally:
+	    xmpp.disconnect()

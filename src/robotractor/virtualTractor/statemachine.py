@@ -1,7 +1,12 @@
 from string import upper
+from TPM import TPM
 
 class StateMachine:
     def __init__(self, xmpp, q):
+	self.tractor = TPM("../keys/robot-server.pub", "../keys/tractor01.priv")
+	#pubkey first #privkey second
+	#encrypt with pub key
+	#decrypt with priv key
         self.handlers = {}  #each handler is a function for a state
         self.startState = None
         self.endStates = []
