@@ -17,7 +17,6 @@ class EchoBot(ClientXMPP):
         self.add_event_handler("session_start", self.session_start)
         self.add_event_handler("message", self.message)
         self.tpm = TPM("keys/tractor01.pub", "keys/robot-server.priv")
-        self.key_exchanged = False
         self.sequence = 0
         
     def session_start(self, event):
@@ -30,7 +29,45 @@ class EchoBot(ClientXMPP):
             sender = msg['from']
 
             print "==========SEQ {0}================".format(self.sequence)
-            if self.key_exchanged == False:
+            #try session decryption, and fail back to key exchange 
+            data = ""
+            try:
+                print "Received Raw message, "+msg['body']
+                data = self.tpm.decrypt(msg['body'])
+                print "Decrypted Data "+data
+
+                tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
+                active_job = RunningJob.objects.filter(tractor=tractor)[0]
+                if active_job.active == False:
+                    print "Sending Kill Machine..."
+                    msg.reply(self.tpm.encrypt(json.dumps("KillTractor"))).send()
+                if data == 'gimmeinfo':
+                    waypoints = Waypoint.objects.filter(job=active_job.job).order_by('sort_order')
+
+                    active_job.last_checkin_time = timezone.now()
+                    active_job.save()
+                    print "Sending data."
+                    data = {}
+                    data["boundary"] = json.loads(serializers.serialize("json", [active_job.job.boundary]))
+                    data["tractor"] = json.loads(serializers.serialize("json", tractor))
+                    data["job"]     = json.loads(serializers.serialize("json", [active_job.job]))
+                    data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
+                    data["sequence"] = self.sequence
+                    rdata = json.dumps(data)
+                    print "Send Data: "+rdata
+                    edata = self.tpm.encrypt(rdata)
+                    print "Encrypted: "+edata
+                    msg.reply(edata).send()
+                else:
+                    points = json.loads(data)
+                    c = CompletedPoint()
+                    c.lat = points[0]
+                    c.longitude = points[1]
+                    c.active_job = active_job
+                    c.save()
+
+            except ValueError:
+                #Failed to unpack a json message or string, do kwy exchange
                 print "Performing Key exchange"
                 data = self.tpm.pki_decrypt(msg['body'])
                 print "Decrypted: '"+data+"'"
@@ -38,46 +75,11 @@ class EchoBot(ClientXMPP):
                     print "Sending Session Key."
                     pencrypt = self.tpm.pki_encrypt(self.tpm.session_key)
                     msg.reply(pencrypt).send()
-                    self.key_exchanged = True
                     return
-
-                    
-            print "Received Raw message, "+msg['body']
-            data = self.tpm.decrypt(msg['body'])
-            print "Decrypted Data "+data
-
-            tractor = Tractor.objects.filter(jabberid=sender.username+'@'+sender.domain)
-            active_job = RunningJob.objects.filter(tractor=tractor)[0]
-            if active_job.active == False:
-                print "Sending Kill Machine..."
-                msg.reply(self.tpm.encrypt(json.dumps("KillTractor"))).send()
                 print "================================"
                 return
 
-            if data != 'gimmeinfo':
-                points = json.loads(data)
-                c = CompletedPoint()
-                c.lat = points[0]
-                c.longitude = points[1]
-                c.active_job = active_job
-                c.save()
-            else:
-                waypoints = Waypoint.objects.filter(job=active_job.job).order_by('sort_order')
 
-                active_job.last_checkin_time = timezone.now()
-                active_job.save()
-                print "Sending data."
-                data = {}
-                data["boundary"] = json.loads(serializers.serialize("json", [active_job.job.boundary]))
-                data["tractor"] = json.loads(serializers.serialize("json", tractor))
-                data["job"]     = json.loads(serializers.serialize("json", [active_job.job]))
-                data["waypoints"] = json.loads(serializers.serialize("json", waypoints))
-                data["sequence"] = self.sequence
-                rdata = json.dumps(data)
-                print "Send Data: "+rdata
-                edata = self.tpm.encrypt(rdata)
-                print "Encrypted: "+edata
-                msg.reply(edata).send()
             print "================================"
 
 if __name__ == '__main__':
@@ -86,4 +88,4 @@ if __name__ == '__main__':
     xmpp = EchoBot('tractor-server@jabber.co.nz', 'Q9MTZx14we')
     xmpp.connect()
     xmpp.process(block=True)
-	
+
